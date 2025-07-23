@@ -20,8 +20,6 @@
 {{ toYaml (dict "env" $env) }}
 {{- end -}}
 
-REPOSILITE_DATA
-
 {{/* image */}}
 
 {{- define "reposilite.deployment.images.reposilite.fqin" -}}
