@@ -33,7 +33,7 @@ version of the chart must be in sync with the `values.yaml`. Newer *minor* versi
 versions can break something!
 
 ```bash
-CHART_VERSION=0.1.0
+CHART_VERSION=0.1.3
 helm show values volker.raschek/reposilite --version "${CHART_VERSION}" > values.yaml
 ```
 
@@ -47,7 +47,7 @@ The helm chart also contains a persistent volume claim definition. It persistent
 Use the `--set` argument to persist your data.
 
 ```bash
-CHART_VERSION=0.1.0
+CHART_VERSION=0.1.3
 helm install --version "${CHART_VERSION}" reposilite volker.raschek/reposilite \
   persistentVolumeClaim.enabled=true
 ```
@@ -68,7 +68,7 @@ connection problems.
 > error.
 
 ```bash
-CHART_VERSION=0.1.0
+CHART_VERSION=0.1.3
 helm install --version "${CHART_VERSION}" reposilite volker.raschek/reposilite \
   --set 'deployment.reposilite.env[1].name=REPOSILITE_LOCAL_SSLENABLED' \
   --set 'deployment.reposilite.env[1].value="true"' \
