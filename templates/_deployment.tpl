@@ -66,6 +66,9 @@
 {{- if and .Values.persistentVolumeClaim.enabled (not .Values.persistentVolumeClaim.existing.enabled) }}
 {{- $persistentVolumeClaimName := include "reposilite.persistentVolumeClaim.name" $ -}}
 {{- $volumes = concat $volumes (list (dict "name" "data" "persistentVolumeClaim" (dict "claimName" $persistentVolumeClaimName))) }}
+{{- else if and .Values.persistentVolumeClaim.enabled .Values.persistentVolumeClaim.existing.enabled .Values.persistentVolumeClaim.existing.persistentVolumeClaimName -}}
+{{- $persistentVolumeClaimName := .Values.persistentVolumeClaim.existing.persistentVolumeClaimName -}}
+{{- $volumes = concat $volumes (list (dict "name" "data" "persistentVolumeClaim" (dict "claimName" $persistentVolumeClaimName))) }}
 {{- end }}
 
 {{ toYaml (dict "volumes" $volumes) }}
