@@ -1,0 +1,412 @@
+# Declare variables to be passed into your templates.
+
+## @section Global
+## @param nameOverride Individual release name suffix.
+## @param fullnameOverride Override the complete release name logic.
+nameOverride: ""
+fullnameOverride: ""
+
+## @section Deployment
+deployment:
+  ## @param deployment.annotations Additional deployment annotations.
+  ## @param deployment.labels Additional deployment labels.
+  annotations: {}
+  labels: {}
+
+  ## @param deployment.additionalContainers List of additional containers.
+  additionalContainers: []
+  # - command: [ "sh", "-c", "echo hello world" ]
+  #   image: "docker.io/library/busybox:latest"
+  #   name: side-car
+
+  ## @param deployment.affinity Affinity for the Reposilite deployment.
+  affinity: {}
+    # nodeAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #     nodeSelectorTerms:
+    #     - matchExpressions:
+    #       - key: kubernetes.io/os
+    #         operator: In
+    #         values:
+    #         - linux
+    #   preferredDuringSchedulingIgnoredDuringExecution:
+    #   - weight: 20
+    #     preference:
+    #       matchExpressions:
+    #       - key: kubernetes.io/arch
+    #         operator: In
+    #         values:
+    #         - amd64
+
+  ## @param deployment.initContainers List of additional init containers.
+  initContainers: []
+  # - command: [ "sh", "-c", "echo hello world" ]
+  #   image: "docker.io/library/busybox:latest"
+  #   name: init
+
+  ## @param deployment.dnsConfig dnsConfig of the Reposilite deployment.
+  dnsConfig: {}
+    # nameservers:
+    # - 192.0.2.1 # this is an example
+    # searches:
+    # - ns1.svc.cluster-domain.example
+    # - my.dns.search.suffix
+    # options:
+    # - name: ndots
+    #   value: "2"
+    # - name: edns0
+
+  ## @param deployment.dnsPolicy dnsPolicy of the Reposilite deployment.
+  dnsPolicy: ""
+
+  ## @param deployment.hostname Individual hostname of the pod.
+  ## @param deployment.subdomain Individual domain of the pod.
+  hostname: ""
+  subdomain: ""
+
+  ## @param deployment.hostNetwork Use the kernel network namespace of the host system.
+  hostNetwork: false
+
+  ## @param deployment.imagePullSecrets Secret to use for pulling the image.
+  imagePullSecrets: []
+  # - name: "my-custom-secret"
+
+  reposilite:
+    ## @param deployment.reposilite.args Arguments passed to the Reposilite container.
+    args: []
+    # - "-c"
+    # - "echo HelloWorld"
+
+    ## @param deployment.reposilite.command Command passed to the Reposilite container.
+    command: []
+    # - "/bin/bash"
+
+    ## @extra deployment.reposilite.env List of environment variables for the Reposilite container.
+    ## @skip deployment.reposilite.env[0].name JAVA_OPTS: Environment variable to define custom java options.
+    ## @skip deployment.reposilite.env[0].value Set custom java options. Use `-Xmx64M` to reduce the heap of the JVM.
+    env:
+    - name: JAVA_OPTS
+      value: "-Xmx64M"
+    # - name: SPECIAL_ENV_A
+    #   value: special-key
+    # - name: SPECIAL_ENV
+    #   valueFrom:
+    #     configMapKeyRef:
+    #       name: special-config
+    #       key: special-key
+    # - name: SPECIAL_ENV
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: special-secret
+    #       key: special-key
+
+    ## @param deployment.reposilite.envFrom List of environment variables mounted from configMaps or secrets for the Reposilite container.
+    envFrom: []
+    # - configMapRef:
+    #     name: special-config
+    # - secretRef:
+    #     name: special-secret
+
+    ## @param deployment.reposilite.image.registry Image registry, eg. `docker.io`.
+    ## @param deployment.reposilite.image.repository Image repository, eg. `library/busybox`.
+    ## @param deployment.reposilite.image.tag Custom image tag, eg. `0.1.0`. Defaults to `appVersion`.
+    ## @param deployment.reposilite.image.pullPolicy Image pull policy.
+    image:
+      registry: docker.io
+      repository: dzikoysk/reposilite
+      tag: ""
+      pullPolicy: IfNotPresent
+
+    ## @param deployment.reposilite.resources CPU and memory resources of the pod.
+    resources: {}
+      # limits:
+      #   cpu:
+      #   ephemeral-storage:
+      #   memory:
+      # requests:
+      #   cpu:
+      #   ephemeral-storage:
+      #   memory:
+
+    ## @param deployment.reposilite.securityContext Security context of the container of the deployment.
+    securityContext: {}
+      # capabilities:
+      #   add:
+      #   - NET_RAW
+      #   drop:
+      #   - ALL
+      # privileged: false
+      # readOnlyRootFilesystem: true
+      # runAsNonRoot: true
+      # runAsUser: 1000
+
+    ## @param deployment.reposilite.volumeMounts Additional volume mounts.
+    volumeMounts: []
+    # - name: my-configmap-volume
+    #   mountPath: /configmap
+    #   readOnly: true
+
+  ## @param deployment.nodeSelector NodeSelector of the Reposilite deployment.
+  nodeSelector: {}
+
+  ## @param deployment.priorityClassName PriorityClassName of the Reposilite deployment.
+  priorityClassName: ""
+
+  ## @param deployment.replicas Number of replicas for the Reposilite deployment.
+  replicas: 1
+
+  ## @param deployment.restartPolicy Restart policy of the Reposilite deployment.
+  restartPolicy: ""
+
+  ## @param deployment.securityContext Security context of the Reposilite deployment.
+  securityContext: {}
+    # fsGroup: 2000
+
+  ## @param deployment.strategy.type Strategy type - `Recreate` or `RollingUpdate`.
+  ## @param deployment.strategy.rollingUpdate.maxSurge The maximum number of pods that can be scheduled above the desired number of pods during a rolling update.
+  ## @param deployment.strategy.rollingUpdate.maxUnavailable The maximum number of pods that can be unavailable during a rolling update.
+  strategy:
+    type: "RollingUpdate"
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
+  ## @param deployment.terminationGracePeriodSeconds How long to wait until forcefully kill the pod.
+  terminationGracePeriodSeconds: 60
+
+  ## @param deployment.tolerations Tolerations of the Reposilite deployment.
+  tolerations: []
+  # - key: host.kubernetes.io/ssd
+  #   operator: Equal
+  #   value: "true"
+  #   effect: NoSchedule
+
+  ## @param deployment.topologySpreadConstraints TopologySpreadConstraints of the Reposilite deployment.
+  topologySpreadConstraints: []
+  # - topologyKey: kubernetes.io/hostname
+  #   whenUnsatisfiable: DoNotSchedule
+  #   labelSelector:
+  #     matchLabels:
+  #       app.kubernetes.io/instance: prometheus-reposilite
+
+  ## @param deployment.volumes Additional volumes to mount into the pods of the prometheus-exporter deployment.
+  volumes: []
+  # - name: my-configmap-volume
+  #   config:
+  #     name: my-configmap
+  # - name: my-secret-volume
+  #   secret:
+  #     secretName: my-secret
+
+
+## @section Horizontal Pod Autoscaler (HPA)
+# In order for the HPA to function successfully, a metric server is required, especially for resource consumption. The
+# metric server enables the CPU and memory utilisation to be recorded. If such a metric server is not available, the HPA
+# cannot scale pods based on CPU or memory utilisation. Further information be be found here:
+# https://github.com/kubernetes-sigs/metrics-server#deployment
+hpa:
+  ## @param hpa.enabled Enable the horizontal pod autoscaler (HPA).
+  ## @param hpa.annotations Additional annotations for the HPA.
+  ## @param hpa.labels Additional labels for the HPA.
+  ## @extra hpa.behavior.scaleDown Scaling policy for scaling down.
+  ## @skip hpa.behavior.scaleDown.policies Skip individual scale down policies.
+  ## @skip hpa.behavior.scaleDown.stabilizationWindowSeconds Skip individual stabilizationWindowSeconds.
+  ## @param hpa.metrics Metrics contains the specifications for which to use to calculate the desired replica count.
+  ## @skip hpa.metrics Skip individual HPA metric configurations.
+  ## @param hpa.minReplicas Min replicas is the lower limit for the number of replicas to which the autoscaler can scale down.
+  ## @param hpa.maxReplicas Upper limit for the number of pods that can be set by the autoscaler.
+  enabled: false
+  annotations: {}
+  labels: {}
+  behavior:
+    scaleDown:
+      policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 60
+      stabilizationWindowSeconds: 300
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 65
+        type: Utilization
+    type: Resource
+  - resource:
+      name: memory
+      target:
+        averageUtilization: 65
+        type: Utilization
+    type: Resource
+  minReplicas: 1
+  maxReplicas: 10
+
+
+## @section Ingress
+ingress:
+  ## @param ingress.enabled Enable creation of an ingress resource. Requires, that the http service is also enabled.
+  ## @param ingress.className Ingress class.
+  ## @param ingress.annotations Additional ingress annotations.
+  ## @param ingress.labels Additional ingress labels.
+  enabled: false
+  className: "nginx"
+  annotations: {}
+  labels: {}
+
+  ## @param ingress.hosts Ingress specific configuration. Let ingress controller listen on specific DNS names and path's.
+  ## @skip ingress.hosts Skip individual host configuration.
+  hosts: []
+  # - host: reposilite.example.local
+  #   paths:
+  #     - path: /
+  #       pathType: Prefix
+
+  ## @param ingress.tls Ingress specific TLS configuration. Use TLS encryption for specific hostnames.
+  ## @skip ingress.tls Skip individual TLS configuration.
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+## @section Network Policy
+networkPolicy:
+  ## @param networkPolicy.enabled Enable network policies in general.
+  ## @param networkPolicy.annotations Additional network policy annotations.
+  ## @param networkPolicy.labels Additional network policy labels.
+  ## @param networkPolicy.policyTypes List of policy types. Supported is ingress, egress or ingress and egress.
+  ## @param networkPolicy.egress Concrete egress network policy implementation.
+  ## @skip networkPolicy.egress Skip individual egress configuration.
+  ## @param networkPolicy.ingress Concrete ingress network policy implementation.
+  ## @skip networkPolicy.ingress Skip individual ingress configuration.
+  enabled: false
+  annotations: {}
+  labels: {}
+  policyTypes: []
+  # - Egress
+  # - Ingress
+  egress: []
+  # Allow outgoing DNS traffic to the internal running DNS-Server. For example core-dns.
+  #
+  # - to:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         kubernetes.io/metadata.name: kube-system
+  #     podSelector:
+  #       matchLabels:
+  #        k8s-app: kube-dns
+  #   ports:
+  #   - port: 53
+  #     protocol: TCP
+  #   - port: 53
+  #     protocol: UDP
+
+  ingress: []
+  # Allow incoming HTTP traffic from prometheus.
+  #
+  # - from:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         kubernetes.io/metadata.name: monitoring
+  #     podSelector:
+  #       matchLabels:
+  #         app.kubernetes.io/name: prometheus
+  #   ports:
+  #   - port: http
+  #     protocol: TCP
+
+  # Allow incoming HTTP traffic from ingress-nginx.
+  #
+  # - from:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         kubernetes.io/metadata.name: ingress-nginx
+  #     podSelector:
+  #       matchLabels:
+  #         app.kubernetes.io/name: ingress-nginx
+  #   ports:
+  #   - port: http
+  #     protocol: TCP
+
+
+## @section Persistent Volume Claim
+persistentVolumeClaim:
+  ## @param persistentVolumeClaim.enabled Enable persistence in general.
+  ## @param persistentVolumeClaim.path Path where the persistent volume claim should be mounted into the container file system.
+  enabled: false
+  path: /app/data
+
+  ## @param persistentVolumeClaim.existing.enabled Enable an existing persistent volume claim.
+  ## @param persistentVolumeClaim.existing.persistentVolumeClaimName Name of the existing persistent volume claim.
+  existing:
+    enabled: false
+    persistentVolumeClaimName: ""
+
+  ## @param persistentVolumeClaim.new.annotations Additional service account annotations.
+  ## @param persistentVolumeClaim.new.labels Additional service account labels.
+  ## @param persistentVolumeClaim.new.accessMode Access mode of the persistent volume claim. More information about the access modes are in detail documented [online](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes).
+  ## @param persistentVolumeClaim.new.size Size of the persistent volume claim.
+  ## @param persistentVolumeClaim.new.storageClass Custom storage class. Left it empty to use the clusters default storage class.
+  new:
+    annotations: {}
+    labels: {}
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClass: ""
+
+
+## @section Service
+## @param service.enabled Enable the service.
+## @param service.annotations Additional service annotations.
+## @param service.externalIPs External IPs for the service.
+## @param service.externalTrafficPolicy If `service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to tell kube-proxy to only use node local endpoints for cluster external traffic. Furthermore, this enables source IP preservation.
+## @param service.internalTrafficPolicy If `service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to tell kube-proxy to only use node local endpoints for cluster internal traffic.
+## @param service.ipFamilies IPFamilies is list of IP families (e.g. `IPv4`, `IPv6`) assigned to this service. This field is usually assigned automatically based on cluster configuration and only required for customization.
+## @param service.labels Additional service labels.
+## @param service.loadBalancerClass LoadBalancerClass is the class of the load balancer implementation this Service belongs to. Requires service from type `LoadBalancer`.
+## @param service.loadBalancerIP LoadBalancer will get created with the IP specified in this field. Requires service from type `LoadBalancer`.
+## @param service.loadBalancerSourceRanges Source range filter for LoadBalancer. Requires service from type `LoadBalancer`.
+## @param service.port Port to forward the traffic to.
+## @param service.sessionAffinity Supports `ClientIP` and `None`. Enable client IP based session affinity via `ClientIP`.
+## @param service.sessionAffinityConfig Contains the configuration of the session affinity.
+## @param service.type Kubernetes service type for the traffic.
+service:
+  enabled: true
+  annotations: {}
+  externalIPs: []
+  externalTrafficPolicy: "Cluster"
+  internalTrafficPolicy: "Cluster"
+  ipFamilies: []
+  labels: {}
+  loadBalancerClass: ""
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  port: 8080
+  sessionAffinity: "None"
+  sessionAffinityConfig: {}
+  type: "ClusterIP"
+
+
+## @section ServiceAccount
+serviceAccount:
+  ## @param serviceAccount.existing.enabled Use an existing service account instead of creating a new one. Assumes that the user has all the necessary kubernetes API authorizations.
+  ## @param serviceAccount.existing.serviceAccountName Name of the existing service account.
+  existing:
+    enabled: false
+    serviceAccountName: ""
+
+  ## @param serviceAccount.new.annotations Additional service account annotations.
+  ## @param serviceAccount.new.labels Additional service account labels.
+  ## @param serviceAccount.new.automountServiceAccountToken Enable/disable auto mounting of the service account token.
+  ## @param serviceAccount.new.imagePullSecrets ImagePullSecrets is a list of references to secrets in the same namespace to use for pulling any images in pods that reference this serviceAccount.
+  ## @param serviceAccount.new.secrets Secrets is the list of secrets allowed to be used by pods running using this ServiceAccount.
+  new:
+    annotations: {}
+    labels: {}
+    automountServiceAccountToken: true
+    imagePullSecrets: []
+    # - name: "my-image-pull-secret"
+    secrets: []
+    # - name: "my-secret"
+    #   namespace: "my-namespace"
+    #   fieldPath: "my-field"

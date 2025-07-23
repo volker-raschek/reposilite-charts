@@ -1,0 +1,26 @@
+annotations:
+  artifacthub.io/links: |
+    - name: Reposilite (binary)
+      url: https://github.com/dzikoysk/reposilite
+    - name: support
+      url: https://git.cryptic.systems/volker.raschek/reposilite-charts/issues
+apiVersion: v2
+appVersion: "3.5.25"
+description: |
+  Lightweight and easy-to-use repository management software
+  dedicated for the Maven based artifacts in the JVM ecosystem
+icon: https://raw.githubusercontent.com/dzikoysk/reposilite/main/reposilite-site/public/images/favicon.png
+keywords:
+  - artifact-repository-manager
+  - deploy
+  - gradle
+  - maven
+  - reposilite
+  - repository-manager
+  - sbt
+name: reposilite
+sources:
+  - https://github.com/dzikoysk/reposilite
+  - https://git.cryptic.systems/volker.raschek/reposilite-charts
+type: application
+version: "0.1.0"
