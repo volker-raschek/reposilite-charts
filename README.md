@@ -2,6 +2,10 @@
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/volker-raschek)](https://artifacthub.io/packages/search?repo=volker-raschek)
 
+> [!NOTE]
+> This is not the official helm chart of Reposilite. If you are looking for the official helm chart, checkout the GitHub
+> project [reposilite-playground](https://github.com/reposilite-playground/reposilite-helm).
+
 This helm chart enables the deployment of [Reposilite](https://github.com/dzikoysk/reposilite), a lightweight and
 easy-to-use repository management software dedicated for the Maven-based artifacts in the JVM ecosystem.
 
