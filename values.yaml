@@ -187,9 +187,9 @@ deployment:
   #   whenUnsatisfiable: DoNotSchedule
   #   labelSelector:
   #     matchLabels:
-  #       app.kubernetes.io/instance: prometheus-reposilite
+  #       app.kubernetes.io/instance: reposilite
 
-  ## @param deployment.volumes Additional volumes to mount into the pods of the prometheus-exporter deployment.
+  ## @param deployment.volumes Additional volumes to mount into the pods of the reposilite deployment.
   volumes: []
   # - name: my-configmap-volume
   #   config:

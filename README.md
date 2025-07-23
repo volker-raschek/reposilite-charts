@@ -211,7 +211,7 @@ networkPolicies:
 | `deployment.terminationGracePeriodSeconds`         | How long to wait until forcefully kill the pod.                                                            | `60`                  |
 | `deployment.tolerations`                           | Tolerations of the Reposilite deployment.                                                                  | `[]`                  |
 | `deployment.topologySpreadConstraints`             | TopologySpreadConstraints of the Reposilite deployment.                                                    | `[]`                  |
-| `deployment.volumes`                               | Additional volumes to mount into the pods of the prometheus-exporter deployment.                           | `[]`                  |
+| `deployment.volumes`                               | Additional volumes to mount into the pods of the reposilite deployment.                                    | `[]`                  |
 
 ### Horizontal Pod Autoscaler (HPA)
 
