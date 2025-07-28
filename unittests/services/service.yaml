@@ -24,8 +24,10 @@ tests:
       kind: Service
       name: reposilite-unittest
       namespace: testing
-  - notExists:
+  - equal:
       path: metadata.annotations
+      value:
+        app.kubernetes.io/service-name: http
   - equal:
       path: metadata.labels
       value:
@@ -110,6 +112,7 @@ tests:
   - equal:
       path: metadata.annotations
       value:
+        app.kubernetes.io/service-name: http
         foo: bar
   - equal:
       path: metadata.labels

@@ -356,6 +356,64 @@ persistentVolumeClaim:
     storageClass: ""
 
 
+## @section Prometheus
+prometheus:
+  ## @param prometheus.metrics.enabled Enable of scraping metrics by Prometheus.
+  ## @param prometheus.metrics.basicAuthUsername Username for basic auth. The username and password is required by reposilite to expose metrics. Default: random alpha numeric string.
+  ## @param prometheus.metrics.enabled Enable of Password for basic auth. The username and password is required by reposilite to expose metrics. Default random alpha numeric string.
+  metrics:
+    enabled: false
+    basicAuthUsername: "my-username"
+    basicAuthPassword: "my-password"
+
+    ## @param prometheus.metrics.podMonitor.enabled Enable creation of a podMonitor. Excludes the existence of a serviceMonitor resource.
+    ## @param prometheus.metrics.podMonitor.annotations Additional podMonitor annotations.
+    ## @param prometheus.metrics.podMonitor.enableHttp2 Enable HTTP2.
+    ## @param prometheus.metrics.podMonitor.followRedirects FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.
+    ## @param prometheus.metrics.podMonitor.honorLabels Honor labels.
+    ## @param prometheus.metrics.podMonitor.labels Additional podMonitor labels.
+    ## @param prometheus.metrics.podMonitor.interval Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.
+    ## @param prometheus.metrics.podMonitor.path HTTP path for scraping Prometheus metrics.
+    ## @param prometheus.metrics.podMonitor.relabelings RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields.
+    ## @param prometheus.metrics.podMonitor.scrapeTimeout Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.
+    podMonitor:
+      enabled: false
+      annotations: {}
+      enableHttp2: true
+      followRedirects: false
+      honorLabels: false
+      labels: {}
+      interval: "60s"
+      path: "/metrics"
+      relabelings: []
+      scrapeTimeout: "30s"
+
+    ## @param prometheus.metrics.serviceMonitor.enabled Enable creation of a serviceMonitor. Excludes the existence of a podMonitor resource.
+    ## @param prometheus.metrics.serviceMonitor.annotations Additional serviceMonitor annotations.
+    ## @param prometheus.metrics.serviceMonitor.labels Additional serviceMonitor labels.
+    ## @param prometheus.metrics.serviceMonitor.enableHttp2 Enable HTTP2.
+    ## @param prometheus.metrics.serviceMonitor.followRedirects FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.
+    ## @param prometheus.metrics.serviceMonitor.honorLabels Honor labels.
+    ## @param prometheus.metrics.serviceMonitor.interval Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.
+    ## @param prometheus.metrics.serviceMonitor.path HTTP path for scraping Prometheus metrics.
+    ## @param prometheus.metrics.serviceMonitor.relabelings RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields.
+    ## @param prometheus.metrics.serviceMonitor.scrapeTimeout Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.
+    ## @param prometheus.metrics.serviceMonitor.scheme HTTP scheme to use for scraping. For example `http` or `https`.
+    ## @param prometheus.metrics.serviceMonitor.tlsConfig TLS configuration to use when scraping the metric endpoint by Prometheus.
+    ## @skip prometheus.metrics.serviceMonitor.tlsConfig Skip individual TLS configuration.
+    serviceMonitor:
+      enabled: false
+      annotations: {}
+      labels: {}
+      enableHttp2: true
+      followRedirects: false
+      honorLabels: false
+      interval: "60s"
+      path: "/metrics"
+      relabelings: []
+      scrapeTimeout: "30s"
+
+
 ## @section Service
 ## @param service.enabled Enable the service.
 ## @param service.annotations Additional service annotations.
@@ -383,6 +441,7 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   port: 8080
+  scheme: http
   sessionAffinity: "None"
   sessionAffinityConfig: {}
   type: "ClusterIP"

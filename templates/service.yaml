@@ -43,7 +43,7 @@ spec:
   {{- end }}
   {{- end }}
   ports:
-  - name: http
+  - name: {{ required "No service name defined. Either 'http' or 'https' is allowed!" .Values.service.scheme }}
     protocol: TCP
     port: {{ required "No service port defined!" .Values.service.port }}
   selector:

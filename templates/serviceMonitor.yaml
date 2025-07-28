@@ -1,0 +1,43 @@
+{{- if eq (include "reposilite.serviceMonitor.enabled" $) "true" }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  {{- with (include "reposilite.serviceMonitor.annotations" . | fromYaml) }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with (include "reposilite.serviceMonitor.labels" . | fromYaml) }}
+  labels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ include "reposilite.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpoints:
+  - basicAuth:
+      password:
+        key: password
+        name: {{ include "reposilite.secrets.prometheusBasicAuth.name" . }}
+      username:
+        key: username
+        name: {{ include "reposilite.secrets.prometheusBasicAuth.name" . }}
+    enableHttp2: {{ required "The enableHttp2 option of the serviceMonitor is not defined!" .Values.prometheus.metrics.serviceMonitor.enableHttp2 }}
+    followRedirects: {{ required "The followRedirects option of the serviceMonitor is not defined!" .Values.prometheus.metrics.serviceMonitor.followRedirects }}
+    honorLabels: {{ required "The honorLabels option of the serviceMonitor is not defined!" .Values.prometheus.metrics.serviceMonitor.honorLabels }}
+    interval: {{ required "The scrape interval of the serviceMonitor is not defined!" .Values.prometheus.metrics.serviceMonitor.interval }}
+    path: {{ required "The metric path of the serviceMonitor is not defined!" .Values.prometheus.metrics.serviceMonitor.path }}
+    {{- with .Values.prometheus.metrics.serviceMonitor.relabelings }}
+    relabelings:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    scrapeTimeout: {{ required "The scrape timeout of the serviceMonitor is not defined!" .Values.prometheus.metrics.serviceMonitor.scrapeTimeout }}
+    scheme: http
+    targetPort: 8080
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "reposilite.serviceMonitor.selectorLabels" . | nindent 6 }}
+{{- end }}

@@ -4,6 +4,9 @@
 
 {{- define "reposilite.pod.annotations" -}}
 {{ include "reposilite.annotations" . }}
+{{- if .Values.prometheus.metrics.enabled -}}
+{{- printf "checksum/secret-%s: %s" (include "reposilite.secrets.prometheusBasicAuth.name" $) (include (print $.Template.BasePath "/secretPrometheusBasicAuth.yaml") . | sha256sum) }}
+{{- end -}}
 {{- end }}
 
 {{/* labels */}}

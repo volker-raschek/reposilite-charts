@@ -17,6 +17,20 @@
 {{- if .Values.persistentVolumeClaim.enabled }}
 {{- $env = concat $env (list (dict "name" "REPOSILITE_DATA" "value" .Values.persistentVolumeClaim.path )) }}
 {{- end }}
+
+{{- if eq (include "reposilite.podMonitor.enabled" $) "true" }}
+{{- $env = concat $env (list (dict "name" "REPOSILITE_PROMETHEUS_PATH" "value" .Values.prometheus.metrics.podMonitor.path )) }}
+{{- end }}
+
+{{- if eq (include "reposilite.serviceMonitor.enabled" $) "true" }}
+{{- $env = concat $env (list (dict "name" "REPOSILITE_PROMETHEUS_PATH" "value" .Values.prometheus.metrics.serviceMonitor.path )) }}
+{{- end }}
+
+{{- if or (eq (include "reposilite.podMonitor.enabled" $ ) "true") (eq (include "reposilite.serviceMonitor.enabled" $ ) "true") -}}
+{{- $env = concat $env (list (dict "name" "REPOSILITE_PROMETHEUS_USER" "valueFrom" (dict "secretKeyRef" (dict "name" (include "reposilite.secrets.prometheusBasicAuth.name" $) "key" "username")))) }}
+{{- $env = concat $env (list (dict "name" "REPOSILITE_PROMETHEUS_PASSWORD" "valueFrom" (dict "secretKeyRef" (dict "name" (include "reposilite.secrets.prometheusBasicAuth.name" $) "key" "password")))) }}
+{{- end }}
+
 {{ toYaml (dict "env" $env) }}
 {{- end -}}
 

@@ -1,0 +1,43 @@
+{{- if eq (include "reposilite.podMonitor.enabled" $) "true" }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  {{- with (include "reposilite.podMonitor.annotations" . | fromYaml) }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with (include "reposilite.podMonitor.labels" . | fromYaml) }}
+  labels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ include "reposilite.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  podMetricsEndpoints:
+  - basicAuth:
+      password:
+        key: password
+        name: {{ include "reposilite.secrets.prometheusBasicAuth.name" . }}
+      username:
+        key: username
+        name: {{ include "reposilite.secrets.prometheusBasicAuth.name" . }}
+    enableHttp2: {{ required "The enableHttp2 option of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.enableHttp2 }}
+    followRedirects: {{ required "The followRedirects option of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.followRedirects }}
+    honorLabels: {{ required "The honorLabels option of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.honorLabels }}
+    interval: {{ required "The scrape interval of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.interval }}
+    path: {{ required "The metric path of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.path }}
+    port: "8080"
+    {{- with .Values.prometheus.metrics.podMonitor.relabelings }}
+    relabelings:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    scrapeTimeout: {{ required "The scrape timeout of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.scrapeTimeout }}
+    scheme: http
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "reposilite.pod.selectorLabels" . | nindent 6 }}
+{{- end }}

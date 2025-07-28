@@ -68,7 +68,10 @@ spec:
         name: reposilite
         ports:
         - name: http
-          containerPort: {{ .Values.service.port }}
+          containerPort: 8080
+          protocol: TCP
+        - name: https
+          containerPort: 8443
           protocol: TCP
         readinessProbe:
           tcpSocket:

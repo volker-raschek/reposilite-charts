@@ -1,0 +1,37 @@
+chart:
+  appVersion: 0.1.0
+  version: 0.1.0
+suite: Add prometheus basic auth variables
+release:
+  name: reposilite-unittest
+  namespace: testing
+templates:
+- templates/deployment.yaml
+- templates/secretPrometheusBasicAuth.yaml
+tests:
+- it: Rendering default environment variables with enabled prometheus metrics podMonitor
+  set:
+    prometheus.metrics.enabled: true
+    prometheus.metrics.podMonitor.enabled: true
+  asserts:
+  - exists:
+      path: spec.template.metadata.annotations.checksum/secret-reposilite-unittest-basic-auth-credentials
+    template: templates/deployment.yaml
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: REPOSILITE_PROMETHEUS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: reposilite-unittest-basic-auth-credentials
+            key: password
+    template: templates/deployment.yaml
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: REPOSILITE_PROMETHEUS_USER
+        valueFrom:
+          secretKeyRef:
+            name: reposilite-unittest-basic-auth-credentials
+            key: username
+    template: templates/deployment.yaml

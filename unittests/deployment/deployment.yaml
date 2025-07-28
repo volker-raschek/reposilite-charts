@@ -7,19 +7,23 @@ release:
   namespace: testing
 templates:
 - templates/deployment.yaml
+- templates/secretPrometheusBasicAuth.yaml
 tests:
 - it: Rendering default
   set: {}
   asserts:
   - hasDocuments:
       count: 1
+    template: templates/deployment.yaml
   - containsDocument:
       apiVersion: apps/v1
       kind: Deployment
       name: reposilite-unittest
       namespace: testing
+    template: templates/deployment.yaml
   - notExists:
       path: metadata.annotations
+    template: templates/deployment.yaml
   - equal:
       path: metadata.labels
       value:
@@ -28,14 +32,17 @@ tests:
         app.kubernetes.io/name: reposilite
         app.kubernetes.io/version: 0.1.0
         helm.sh/chart: reposilite-0.1.0
+    template: templates/deployment.yaml
   - equal:
       path: spec.replicas
       value: 1
+    template: templates/deployment.yaml
   - isSubset:
       path: spec.selector.matchLabels
       content:
         app.kubernetes.io/instance: reposilite-unittest
         app.kubernetes.io/name: reposilite
+    template: templates/deployment.yaml
   - equal:
       path: spec.strategy
       value:
@@ -43,9 +50,10 @@ tests:
         rollingUpdate:
           maxSurge: 1
           maxUnavailable: 1
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.metadata.annotations
-      value: sadsdf
+    template: templates/deployment.yaml
   - equal:
       path: spec.template.metadata.labels
       value:
@@ -54,25 +62,33 @@ tests:
         app.kubernetes.io/name: reposilite
         app.kubernetes.io/version: 0.1.0
         helm.sh/chart: reposilite-0.1.0
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.affinity
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.containers[0].args
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.containers[0].command
+    template: templates/deployment.yaml
   - contains:
       path: spec.template.spec.containers[0].env
       content:
         name: JAVA_OPTS
         value: "-Xmx64M"
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.containers[0].envFrom
+    template: templates/deployment.yaml
   - equal:
       path: spec.template.spec.containers[0].image
       value: docker.io/dzikoysk/reposilite:0.1.0
+    template: templates/deployment.yaml
   - equal:
       path: spec.template.spec.containers[0].imagePullPolicy
       value: IfNotPresent
+    template: templates/deployment.yaml
   - isSubset:
       path: spec.template.spec.containers[0].livenessProbe
       content:
@@ -83,15 +99,18 @@ tests:
         periodSeconds: 60
         successThreshold: 1
         timeoutSeconds: 3
+    template: templates/deployment.yaml
   - equal:
       path: spec.template.spec.containers[0].name
       value: reposilite
+    template: templates/deployment.yaml
   - contains:
       path: spec.template.spec.containers[0].ports
       content:
         name: http
         containerPort: 8080
         protocol: TCP
+    template: templates/deployment.yaml
   - isSubset:
       path: spec.template.spec.containers[0].readinessProbe
       content:
@@ -102,42 +121,60 @@ tests:
         periodSeconds: 15
         successThreshold: 1
         timeoutSeconds: 3
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.containers[0].resources
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.containers[0].securityContext
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.containers[0].volumeMounts
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.dnsConfig
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.dnsPolicy
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.hostname
+    template: templates/deployment.yaml
   - equal:
       path: spec.template.spec.hostNetwork
       value: false
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.imagePullSecrets
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.initContainers
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.nodeSelector
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.priorityClassName
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.restartPolicy
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.subdomain
+    template: templates/deployment.yaml
   - equal:
       path: spec.template.spec.terminationGracePeriodSeconds
       value: 60
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.tolerations
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.topologySpreadConstraints
+    template: templates/deployment.yaml
   - notExists:
       path: spec.template.spec.volumes
+    template: templates/deployment.yaml
 
 - it: Test custom replicas
   set:
@@ -146,6 +183,7 @@ tests:
   - equal:
       path: spec.replicas
       value: 3
+    template: templates/deployment.yaml
 
 - it: Test custom strategy
   set:
@@ -162,6 +200,7 @@ tests:
         rollingUpdate:
           maxSurge: 10
           maxUnavailable: 5
+    template: templates/deployment.yaml
 
 - it: Test custom affinity
   set:
@@ -188,6 +227,7 @@ tests:
                 values:
                 - antarctica-east1
                 - antarctica-west1
+    template: templates/deployment.yaml
 
 - it: Test additional arguments
   set:
@@ -200,6 +240,7 @@ tests:
       value:
       - --foo=bar
       - --bar=foo
+    template: templates/deployment.yaml
 
 - it: Test additional commands
   set:
@@ -210,6 +251,7 @@ tests:
       path: spec.template.spec.containers[0].command
       value:
       - /bin/bash
+    template: templates/deployment.yaml
 
 - it: Test custom imageRegistry and imageRepository
   set:
@@ -220,6 +262,7 @@ tests:
   - equal:
       path: spec.template.spec.containers[0].image
       value: registry.example.local/path/special/reposilite:2.0.0
+    template: templates/deployment.yaml
 
 - it: Test custom imagePullPolicy
   set:
@@ -228,17 +271,7 @@ tests:
   - equal:
       path: spec.template.spec.containers[0].imagePullPolicy
       value: Always
-
-- it: Test custom port
-  set:
-    service.port: 8443
-  asserts:
-  - contains:
-      path: spec.template.spec.containers[0].ports
-      content:
-        name: http
-        containerPort: 8443
-        protocol: TCP
+    template: templates/deployment.yaml
 
 - it: Test custom resources
   set:
@@ -259,6 +292,7 @@ tests:
         requests:
           cpu: 25m
           memory: 100MB
+    template: templates/deployment.yaml
 
 - it: Test custom securityContext
   set:
@@ -285,6 +319,7 @@ tests:
         readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
+    template: templates/deployment.yaml
 
 - it: Test custom volumeMounts
   set:
@@ -297,6 +332,7 @@ tests:
       content:
         name: data
         mountPath: /usr/lib/data
+    template: templates/deployment.yaml
 
 - it: Test dnsConfig
   set:
@@ -311,6 +347,7 @@ tests:
         nameservers:
         - "8.8.8.8"
         - "8.8.4.4"
+    template: templates/deployment.yaml
 
 - it: Test dnsPolicy
   set:
@@ -319,6 +356,7 @@ tests:
   - equal:
       path: spec.template.spec.dnsPolicy
       value: ClusterFirst
+    template: templates/deployment.yaml
 
 - it: Test hostNetwork, hostname, subdomain
   set:
@@ -329,12 +367,15 @@ tests:
   - equal:
       path: spec.template.spec.hostNetwork
       value: true
+    template: templates/deployment.yaml
   - equal:
       path: spec.template.spec.hostname
       value: pg-exporter
+    template: templates/deployment.yaml
   - equal:
       path: spec.template.spec.subdomain
       value: exporters.internal
+    template: templates/deployment.yaml
 
 - it: Test imagePullSecrets
   set:
@@ -347,6 +388,7 @@ tests:
       value:
       - name: my-pull-secret
       - name: my-special-secret
+    template: templates/deployment.yaml
 
 - it: Test nodeSelector
   set:
@@ -357,6 +399,7 @@ tests:
       path: spec.template.spec.nodeSelector
       value:
         foo: bar
+    template: templates/deployment.yaml
 
 - it: Test priorityClassName
   set:
@@ -365,6 +408,7 @@ tests:
   - equal:
       path: spec.template.spec.priorityClassName
       value: my-priority
+    template: templates/deployment.yaml
 
 - it: Test restartPolicy
   set:
@@ -373,6 +417,7 @@ tests:
   - equal:
       path: spec.template.spec.restartPolicy
       value: Always
+    template: templates/deployment.yaml
 
 - it: Test custom securityContext
   set:
@@ -389,6 +434,7 @@ tests:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
+    template: templates/deployment.yaml
 
 - it: Test terminationGracePeriodSeconds
   set:
@@ -397,6 +443,7 @@ tests:
   - equal:
       path: spec.template.spec.terminationGracePeriodSeconds
       value: 120
+    template: templates/deployment.yaml
 
 - it: Test tolerations
   set:
@@ -413,6 +460,7 @@ tests:
         operator: Equal
         value: ssd
         effect: NoSchedule
+    template: templates/deployment.yaml
 
 - it: Test topologySpreadConstraints
   set:
@@ -431,6 +479,7 @@ tests:
         labelSelector:
           matchLabels:
             app.kubernetes.io/instance: reposilite
+    template: templates/deployment.yaml
 
 - it: Test additional volumes
   set:
@@ -445,3 +494,4 @@ tests:
       - name: data
         hostPath:
           path: /usr/lib/data
+    template: templates/deployment.yaml

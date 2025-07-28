@@ -7,6 +7,7 @@ release:
   namespace: testing
 templates:
 - templates/deployment.yaml
+- templates/secretPrometheusBasicAuth.yaml
 tests:
 - it: Rendering default volumes and volumeMounts with persistent volume claim
   set:
@@ -17,17 +18,20 @@ tests:
       content:
         name: REPOSILITE_DATA
         value: /app/data
+    template: templates/deployment.yaml
   - contains:
       path: spec.template.spec.containers[0].volumeMounts
       content:
         name: data
         mountPath: /app/data
+    template: templates/deployment.yaml
   - contains:
       path: spec.template.spec.volumes
       content:
         name: data
         persistentVolumeClaim:
           claimName: reposilite-unittest
+    template: templates/deployment.yaml
 
 - it: Rendering custom volumes and volumeMounts with persistent volume claim
   set:
@@ -39,17 +43,20 @@ tests:
       content:
         name: REPOSILITE_DATA
         value: /usr/lib/reposilite/data
+    template: templates/deployment.yaml
   - contains:
       path: spec.template.spec.containers[0].volumeMounts
       content:
         name: data
         mountPath: /usr/lib/reposilite/data
+    template: templates/deployment.yaml
   - contains:
       path: spec.template.spec.volumes
       content:
         name: data
         persistentVolumeClaim:
           claimName: reposilite-unittest
+    template: templates/deployment.yaml
 
 - it: Rendering custom volumes and volumeMounts with persistent volume claim
   set:
@@ -62,14 +69,17 @@ tests:
       content:
         name: REPOSILITE_DATA
         value: /app/data
+    template: templates/deployment.yaml
   - contains:
       path: spec.template.spec.containers[0].volumeMounts
       content:
         name: data
         mountPath: /app/data
+    template: templates/deployment.yaml
   - contains:
       path: spec.template.spec.volumes
       content:
         name: data
         persistentVolumeClaim:
           claimName: my-custom-pvc
+    template: templates/deployment.yaml

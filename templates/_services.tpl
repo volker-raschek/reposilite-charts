@@ -7,6 +7,8 @@
 {{- if .Values.service.annotations }}
 {{ toYaml .Values.service.annotations }}
 {{- end }}
+{{/* Add label to select the correct service via `selector.matchLabels` of the serviceMonitor resource. */}}
+app.kubernetes.io/service-name: http
 {{- end }}
 
 {{/* labels */}}
