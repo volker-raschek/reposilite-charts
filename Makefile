@@ -4,7 +4,7 @@ CONTAINER_RUNTIME?=$(shell which podman)
 # HELM_IMAGE
 HELM_IMAGE_REGISTRY_HOST?=docker.io
 HELM_IMAGE_REPOSITORY?=volkerraschek/helm
-HELM_IMAGE_VERSION?=3.18.2 # renovate: datasource=docker registryUrl=https://registry-nexus.orbis.dedalus.com depName=volkerraschek/helm
+HELM_IMAGE_VERSION?=3.18.2 # renovate: datasource=docker registryUrl=https://docker.io depName=volkerraschek/helm
 HELM_IMAGE_FULLY_QUALIFIED=${HELM_IMAGE_REGISTRY_HOST}/${HELM_IMAGE_REPOSITORY}:${HELM_IMAGE_VERSION}
 
 # NODE_IMAGE
@@ -17,6 +17,19 @@ NODE_IMAGE_FULLY_QUALIFIED=${NODE_IMAGE_REGISTRY_HOST}/${NODE_IMAGE_REPOSITORY}:
 # ==============================================================================
 missing-dot:
 	grep --perl-regexp '## @(param|skip).*[^.]$$' values.yaml
+
+# README
+# ==============================================================================
+readme: readme/link readme/lint readme/parameters
+
+readme/link:
+	npm install && npm run readme:link
+
+readme/lint:
+	npm install && npm run readme:lint
+
+readme/parameters:
+	npm install && npm run readme:parameters
 
 # CONTAINER RUN - README
 # ==============================================================================

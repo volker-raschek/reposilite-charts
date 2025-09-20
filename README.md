@@ -240,7 +240,7 @@ helm install --version "${CHART_VERSION}" reposilite volker.raschek/reposilite \
 | `deployment.pluginContainer.args`                  | Arguments passed to the plugin container.                                                                  | `["--location","--fail","--max-time","60"]` |
 | `deployment.pluginContainer.image.registry`        | Image registry, eg. `docker.io`.                                                                           | `docker.io`                                 |
 | `deployment.pluginContainer.image.repository`      | Image repository, eg. `curlimages/curl`.                                                                   | `curlimages/curl`                           |
-| `deployment.pluginContainer.image.tag`             | Custom image tag, eg. `0.1.0`.                                                                             | `8.15.0`                                    |
+| `deployment.pluginContainer.image.tag`             | Custom image tag, eg. `0.1.0`.                                                                             | `8.16.0`                                    |
 | `deployment.pluginContainer.image.pullPolicy`      | Image pull policy.                                                                                         | `IfNotPresent`                              |
 | `deployment.priorityClassName`                     | PriorityClassName of the Reposilite deployment.                                                            | `""`                                        |
 | `deployment.replicas`                              | Number of replicas for the Reposilite deployment.                                                          | `1`                                         |
