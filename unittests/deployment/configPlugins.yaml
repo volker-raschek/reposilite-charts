@@ -1,0 +1,42 @@
+chart:
+  appVersion: 0.1.0
+  version: 0.1.0
+suite: Test reposilite plugins
+release:
+  name: reposilite-unittest
+  namespace: testing
+templates:
+- templates/deployment.yaml
+- templates/secretPrometheusBasicAuth.yaml
+tests:
+- it: Test init containers for prometheus
+  set:
+    config.plugins.prometheus.enabled: true
+    config.plugins.prometheus.url: "https://reposilite.com/plugins/prometheus.jar"
+    deployment.pluginContainer.image.tag: 0.1.0
+  asserts:
+  - contains:
+      path: spec.template.spec.initContainers
+      content:
+        args:
+        - --location
+        - --fail
+        - --max-time
+        - "60"
+        - --output-dir
+        - /app/data/plugins
+        - --output
+        - prometheus.jar
+        - https://reposilite.com/plugins/prometheus.jar
+        name: download-prometheus-plugin
+        image: docker.io/curlimages/curl:0.1.0
+        volumeMounts:
+        - mountPath: /app/data/plugins
+          name: plugins
+    template: templates/deployment.yaml
+  - contains:
+      path: spec.template.spec.volumes
+      content:
+        name: plugins
+        emptyDir: {}
+    template: templates/deployment.yaml

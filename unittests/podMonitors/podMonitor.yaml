@@ -67,7 +67,7 @@ tests:
           name: reposilite-unittest-basic-auth-credentials
   - equal:
       path: spec.podMetricsEndpoints[0].enableHttp2
-      value: true
+      value: false
   - equal:
       path: spec.podMetricsEndpoints[0].followRedirects
       value: false
@@ -82,7 +82,7 @@ tests:
       value: /metrics
   - equal:
       path: spec.podMetricsEndpoints[0].port
-      value: "8080"
+      value: http
   - notExists:
       path: spec.podMetricsEndpoints[0].relabelings
   - equal:
@@ -133,12 +133,14 @@ tests:
     prometheus.metrics.podMonitor.honorLabels: true
     prometheus.metrics.podMonitor.interval: "180s"
     prometheus.metrics.podMonitor.path: "/my-metrics"
+    prometheus.metrics.podMonitor.port: "8443"
     prometheus.metrics.podMonitor.relabelings:
     - sourceLabels: [ container ]
       separator: ";"
       regex: "app"
       replacement: "$1"
       action: "drop"
+    prometheus.metrics.podMonitor.scheme: https
     prometheus.metrics.podMonitor.scrapeTimeout: "5s"
   asserts:
   - hasDocuments:
@@ -160,7 +162,7 @@ tests:
       value: /my-metrics
   - equal:
       path: spec.podMetricsEndpoints[0].port
-      value: "8080"
+      value: "8443"
   - contains:
       path: spec.podMetricsEndpoints[0].relabelings
       content:
@@ -174,4 +176,4 @@ tests:
       value: 5s
   - equal:
       path: spec.podMetricsEndpoints[0].scheme
-      value: http
+      value: https

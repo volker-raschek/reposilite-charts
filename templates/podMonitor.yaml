@@ -27,13 +27,17 @@ spec:
     honorLabels: {{ required "The honorLabels option of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.honorLabels }}
     interval: {{ required "The scrape interval of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.interval }}
     path: {{ required "The metric path of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.path }}
-    port: "8080"
+    port: {{ required "The metric port of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.port | quote }}
     {{- with .Values.prometheus.metrics.podMonitor.relabelings }}
     relabelings:
       {{- toYaml . | nindent 6 }}
     {{- end }}
     scrapeTimeout: {{ required "The scrape timeout of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.scrapeTimeout }}
-    scheme: http
+    scheme: {{ required "The scheme of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.scheme }}
+    {{- with .Values.prometheus.metrics.podMonitor.tlsConfig }}
+    tlsConfig:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}

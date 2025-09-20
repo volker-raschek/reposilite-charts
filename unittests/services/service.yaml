@@ -24,16 +24,15 @@ tests:
       kind: Service
       name: reposilite-unittest
       namespace: testing
-  - equal:
+  - notExists:
       path: metadata.annotations
-      value:
-        app.kubernetes.io/service-name: http
   - equal:
       path: metadata.labels
       value:
         app.kubernetes.io/instance: reposilite-unittest
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: reposilite
+        app.kubernetes.io/service-name: http
         app.kubernetes.io/version: 0.1.0
         helm.sh/chart: reposilite-0.1.0
   - notExists:
@@ -88,6 +87,13 @@ tests:
   - failedTemplate:
     errorMessage: No service port defined!
 
+- it: Require scheme.
+  set:
+    service.scheme: ""
+  asserts:
+  - failedTemplate:
+    errorMessage: No service scheme defined!
+
 - it: Require sessionAffinity.
   set:
     service.sessionAffinity: ""
@@ -108,11 +114,11 @@ tests:
       foo: bar
     service.labels:
       bar: foo
+    service.scheme: https
   asserts:
   - equal:
       path: metadata.annotations
       value:
-        app.kubernetes.io/service-name: http
         foo: bar
   - equal:
       path: metadata.labels
@@ -120,6 +126,7 @@ tests:
         app.kubernetes.io/instance: reposilite-unittest
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: reposilite
+        app.kubernetes.io/service-name: https
         app.kubernetes.io/version: 0.1.0
         helm.sh/chart: reposilite-0.1.0
         bar: foo
@@ -137,6 +144,7 @@ tests:
     service.loadBalancerSourceRanges:
     - "11.12.0.0/17"
     service.port: 10443
+    service.scheme: https
     service.sessionAffinity: ClientIP
     service.type: LoadBalancer
   asserts:
@@ -164,6 +172,9 @@ tests:
       path: spec.loadBalancerSourceRanges
       value:
       - "11.12.0.0/17"
+  - equal:
+      path: spec.ports[0].name
+      value: https
   - equal:
       path: spec.ports[0].port
       value: 10443

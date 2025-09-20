@@ -390,6 +390,19 @@ tests:
       - name: my-special-secret
     template: templates/deployment.yaml
 
+- it: Test initContainers
+  set:
+    deployment.initContainers:
+    - name: busybox
+      image: docker.io/library/busybox:latest
+  asserts:
+  - contains:
+      path: spec.template.spec.initContainers
+      content:
+        name: busybox
+        image: docker.io/library/busybox:latest
+    template: templates/deployment.yaml
+
 - it: Test nodeSelector
   set:
     deployment.nodeSelector:

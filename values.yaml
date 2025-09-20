@@ -6,6 +6,17 @@
 nameOverride: ""
 fullnameOverride: ""
 
+
+## @section Config
+config:
+  plugins:
+    ## @param config.plugins.prometheus.enabled Download the Prometheus plugin via an additional init container. The Prometheus plugin will automatically enabled, when Prometheus is enabled.
+    ## @param config.plugins.prometheus.url URL to download the plugin.
+    prometheus:
+      enabled: false
+      url: https://maven.reposilite.com/releases/com/reposilite/plugin/prometheus-plugin/{{ .Chart.AppVersion }}/prometheus-plugin-{{ .Chart.AppVersion }}-all.jar
+
+
 ## @section Deployment
 deployment:
   ## @param deployment.annotations Additional deployment annotations.
@@ -148,6 +159,24 @@ deployment:
 
   ## @param deployment.nodeSelector NodeSelector of the Reposilite deployment.
   nodeSelector: {}
+
+  pluginContainer:
+    ## @param deployment.pluginContainer.args Arguments passed to the plugin container.
+    args:
+    - "--location"
+    - "--fail"
+    - "--max-time"
+    - "60"
+
+    ## @param deployment.pluginContainer.image.registry Image registry, eg. `docker.io`.
+    ## @param deployment.pluginContainer.image.repository Image repository, eg. `curlimages/curl`.
+    ## @param deployment.pluginContainer.image.tag Custom image tag, eg. `0.1.0`.
+    ## @param deployment.pluginContainer.image.pullPolicy Image pull policy.
+    image:
+      registry: docker.io
+      repository: curlimages/curl
+      tag: "8.15.0"
+      pullPolicy: IfNotPresent
 
   ## @param deployment.priorityClassName PriorityClassName of the Reposilite deployment.
   priorityClassName: ""
@@ -302,6 +331,11 @@ networkPolicy:
   #   - port: 53
   #     protocol: UDP
 
+  ## Allow outgoing HTTP traffic. For example to download maven artifacts from Apache Maven Central or Reposlite plugins from upstream.
+  # - ports:
+  #   - port: 443
+  #     protocol: TCP
+
   ingress: []
   # Allow incoming HTTP traffic from prometheus.
   #
@@ -315,6 +349,8 @@ networkPolicy:
   #   ports:
   #   - port: http
   #     protocol: TCP
+  #   - port: https
+  #     protocol: TCP
 
   # Allow incoming HTTP traffic from ingress-nginx.
   #
@@ -327,6 +363,8 @@ networkPolicy:
   #         app.kubernetes.io/name: ingress-nginx
   #   ports:
   #   - port: http
+  #     protocol: TCP
+  #   - port: https
   #     protocol: TCP
 
 
@@ -360,11 +398,11 @@ persistentVolumeClaim:
 prometheus:
   ## @param prometheus.metrics.enabled Enable of scraping metrics by Prometheus.
   ## @param prometheus.metrics.basicAuthUsername Username for basic auth. The username and password is required by reposilite to expose metrics. Default: random alpha numeric string.
-  ## @param prometheus.metrics.enabled Enable of Password for basic auth. The username and password is required by reposilite to expose metrics. Default random alpha numeric string.
+  ## @param prometheus.metrics.basicAuthPassword Password for basic auth. The username and password is required by reposilite to expose metrics. Default random alpha numeric string.
   metrics:
     enabled: false
-    basicAuthUsername: "my-username"
-    basicAuthPassword: "my-password"
+    basicAuthUsername: ""
+    basicAuthPassword: ""
 
     ## @param prometheus.metrics.podMonitor.enabled Enable creation of a podMonitor. Excludes the existence of a serviceMonitor resource.
     ## @param prometheus.metrics.podMonitor.annotations Additional podMonitor annotations.
@@ -373,20 +411,27 @@ prometheus:
     ## @param prometheus.metrics.podMonitor.honorLabels Honor labels.
     ## @param prometheus.metrics.podMonitor.labels Additional podMonitor labels.
     ## @param prometheus.metrics.podMonitor.interval Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.
-    ## @param prometheus.metrics.podMonitor.path HTTP path for scraping Prometheus metrics.
+    ## @param prometheus.metrics.podMonitor.path HTTP path of the Reposilite pod for scraping Prometheus metrics.
+    ## @param prometheus.metrics.podMonitor.port HTTP port of the Reposilite pod for scraping Prometheus metrics.
     ## @param prometheus.metrics.podMonitor.relabelings RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields.
     ## @param prometheus.metrics.podMonitor.scrapeTimeout Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.
+    ## @param prometheus.metrics.podMonitor.scheme HTTP scheme to use for scraping. For example `http` or `https`.
+    ## @param prometheus.metrics.podMonitor.tlsConfig TLS configuration to use when scraping the metric endpoint by Prometheus.
+    ## @skip prometheus.metrics.podMonitor.tlsConfig Skip individual TLS configuration.
     podMonitor:
       enabled: false
       annotations: {}
-      enableHttp2: true
+      enableHttp2: false
       followRedirects: false
       honorLabels: false
       labels: {}
       interval: "60s"
       path: "/metrics"
+      port: "http"
       relabelings: []
       scrapeTimeout: "30s"
+      scheme: "http"
+      tlsConfig: {}
 
     ## @param prometheus.metrics.serviceMonitor.enabled Enable creation of a serviceMonitor. Excludes the existence of a podMonitor resource.
     ## @param prometheus.metrics.serviceMonitor.annotations Additional serviceMonitor annotations.
@@ -405,14 +450,15 @@ prometheus:
       enabled: false
       annotations: {}
       labels: {}
-      enableHttp2: true
+      enableHttp2: false
       followRedirects: false
       honorLabels: false
       interval: "60s"
       path: "/metrics"
       relabelings: []
       scrapeTimeout: "30s"
-
+      scheme: "http"
+      tlsConfig: {}
 
 ## @section Service
 ## @param service.enabled Enable the service.
@@ -426,6 +472,7 @@ prometheus:
 ## @param service.loadBalancerIP LoadBalancer will get created with the IP specified in this field. Requires service from type `LoadBalancer`.
 ## @param service.loadBalancerSourceRanges Source range filter for LoadBalancer. Requires service from type `LoadBalancer`.
 ## @param service.port Port to forward the traffic to.
+## @param service.scheme Name of the service port. This name is also used as scheme / port name of the service monitor resource.
 ## @param service.sessionAffinity Supports `ClientIP` and `None`. Enable client IP based session affinity via `ClientIP`.
 ## @param service.sessionAffinityConfig Contains the configuration of the session affinity.
 ## @param service.type Kubernetes service type for the traffic.

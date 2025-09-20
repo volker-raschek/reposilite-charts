@@ -31,5 +31,5 @@ false
 {{- define "reposilite.serviceMonitor.selectorLabels" -}}
 {{ include "reposilite.selectorLabels" . }}
 {{/* Add label to select the correct service via `selector.matchLabels` of the serviceMonitor resource. */}}
-app.kubernetes.io/service-name: http
+app.kubernetes.io/service-name: {{ required "The scheme of the serviceMonitor is not defined!" .Values.service.scheme }}
 {{- end }}

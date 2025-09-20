@@ -36,6 +36,13 @@
 
 {{/* image */}}
 
+{{- define "reposilite.deployment.images.plugin.fqin" -}}
+{{- $registry := .Values.deployment.pluginContainer.image.registry -}}
+{{- $repository := .Values.deployment.pluginContainer.image.repository -}}
+{{- $tag := default .Chart.AppVersion .Values.deployment.pluginContainer.image.tag -}}
+{{- printf "%s/%s:%s" $registry $repository $tag -}}
+{{- end -}}
+
 {{- define "reposilite.deployment.images.reposilite.fqin" -}}
 {{- $registry := .Values.deployment.reposilite.image.registry -}}
 {{- $repository := .Values.deployment.reposilite.image.repository -}}
@@ -50,6 +57,34 @@
 {{- if .Values.deployment.labels }}
 {{ toYaml .Values.deployment.labels }}
 {{- end }}
+{{- end }}
+
+{{/* initContainers */}}
+
+{{- define "reposilite.deployment.initContainers" -}}
+{{- $initContainers := .Values.deployment.initContainers | default list -}}
+{{- $pluginContainerImage := (include "reposilite.deployment.images.plugin.fqin" . ) }}
+{{- $pluginContainerArgs := .Values.deployment.pluginContainer.args | default list }}
+{{- $pluginContainerArgs := concat $pluginContainerArgs (list "--output-dir" "/app/data/plugins" ) }}
+{{- $pluginContainerVolumeMounts := list (dict "name" "plugins" "mountPath" "/app/data/plugins") }}
+
+{{- if eq (include "reposilite.plugins.prometheus.enabled" $) "true" }}
+{{- $fileName := splitList "/" (tpl .Values.config.plugins.prometheus.url $) | last }}
+{{- $individualArgs := concat $pluginContainerArgs (list "--output" $fileName (tpl .Values.config.plugins.prometheus.url $)) }}
+{{- $initContainers = concat $initContainers (list (dict "args" $individualArgs "name" "download-prometheus-plugin" "image" $pluginContainerImage "volumeMounts" $pluginContainerVolumeMounts)) }}
+{{- end }}
+
+{{ toYaml (dict "initContainers" $initContainers) }}
+
+{{- end }}
+
+{{/* plugins */}}
+{{- define "reposilite.plugins.prometheus.enabled" -}}
+{{- if or .Values.config.plugins.prometheus.enabled .Values.prometheus.metrics.enabled -}}
+true
+{{- else -}}
+false
+{{- end -}}
 {{- end }}
 
 {{/* serviceAccount */}}
@@ -69,6 +104,11 @@
 {{- if .Values.persistentVolumeClaim.enabled }}
 {{- $volumeMounts = concat $volumeMounts (list (dict "name" "data" "mountPath" .Values.persistentVolumeClaim.path )) }}
 {{- end }}
+
+{{- if eq (include "reposilite.plugins.prometheus.enabled" $) "true" }}
+{{- $volumeMounts = concat $volumeMounts (list (dict "name" "plugins" "mountPath" "/app/data/plugins")) }}
+{{- end }}
+
 {{ toYaml (dict "volumeMounts" $volumeMounts) }}
 {{- end -}}
 
@@ -83,6 +123,10 @@
 {{- else if and .Values.persistentVolumeClaim.enabled .Values.persistentVolumeClaim.existing.enabled .Values.persistentVolumeClaim.existing.persistentVolumeClaimName -}}
 {{- $persistentVolumeClaimName := .Values.persistentVolumeClaim.existing.persistentVolumeClaimName -}}
 {{- $volumes = concat $volumes (list (dict "name" "data" "persistentVolumeClaim" (dict "claimName" $persistentVolumeClaimName))) }}
+{{- end }}
+
+{{- if eq (include "reposilite.plugins.prometheus.enabled" $) "true" }}
+{{- $volumes = concat $volumes (list (dict "name" "plugins" "emptyDir" dict)) }}
 {{- end }}
 
 {{ toYaml (dict "volumes" $volumes) }}

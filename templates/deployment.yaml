@@ -109,6 +109,11 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- $initContainers := (include "reposilite.deployment.initContainers" . | fromYaml) }}
+      {{- if and (hasKey $initContainers "initContainers") (gt (len $initContainers.initContainers) 0) }}
+      initContainers:
+      {{- toYaml $initContainers.initContainers | nindent 6 }}
+      {{- end }}
       {{- with .Values.deployment.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

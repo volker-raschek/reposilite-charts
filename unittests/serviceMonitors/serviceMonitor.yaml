@@ -68,7 +68,7 @@ tests:
           name: reposilite-unittest-basic-auth-credentials
   - equal:
       path: spec.endpoints[0].enableHttp2
-      value: true
+      value: false
   - equal:
       path: spec.endpoints[0].followRedirects
       value: false
@@ -90,8 +90,8 @@ tests:
       path: spec.endpoints[0].scheme
       value: http
   - equal:
-      path: spec.endpoints[0].targetPort
-      value: 8080
+      path: spec.endpoints[0].port
+      value: http
   - contains:
       path: spec.namespaceSelector.matchNames
       content:
@@ -142,7 +142,8 @@ tests:
       replacement: "$1"
       action: "drop"
     prometheus.metrics.serviceMonitor.scrapeTimeout: "5s"
-    prometheus.metrics.serviceMonitor.scheme: "http"
+    prometheus.metrics.serviceMonitor.scheme: "https"
+    service.scheme: https
   asserts:
   - hasDocuments:
       count: 1
@@ -161,6 +162,9 @@ tests:
   - equal:
       path: spec.endpoints[0].path
       value: /my-metrics
+  - equal:
+      path: spec.endpoints[0].port
+      value: https
   - contains:
       path: spec.endpoints[0].relabelings
       content:
@@ -174,4 +178,4 @@ tests:
       value: 5s
   - equal:
       path: spec.endpoints[0].scheme
-      value: http
+      value: https

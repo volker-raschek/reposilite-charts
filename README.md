@@ -122,14 +122,15 @@ deployment:
     secret.reloader.stakater.com/reload: "reposilite-tls"
 ```
 
-### Network policies
+#### Network policies
 
 Network policies can only take effect, when the used CNI plugin support network policies. The chart supports no custom
 network policy implementation of CNI plugins. It's support only the official API resource of `networking.k8s.io/v1`.
 
 The example below is an excerpt of the `values.yaml` file. The network policy contains ingress rules to allow incoming
-traffic from an ingress controller. Additionally one egress rule is defined, to allow the application outgoing access
-to the internal running DNS server `core-dns`.
+traffic from an ingress controller. Additionally two egress rules are defined. The first one to allow the application
+outgoing access to the internal running DNS server `core-dns`. The second rule to be able to access the Apache Maven
+Central repository via HTTPS.
 
 > [!IMPORTANT]
 > Please keep in mind, that the namespace and pod selector labels can be different from environment to environment. For
@@ -156,6 +157,10 @@ networkPolicies:
       protocol: TCP
     - port: 53
       protocol: UDP
+  - ports:
+    - port: 443
+      protocol: TCP
+
   ingress:
   - from:
     - namespaceSelector:
@@ -169,6 +174,26 @@ networkPolicies:
       protocol: TCP
 ```
 
+### Prometheus
+
+Reposilite is not able to expose metrics by default. Reposilite requires an additional plugin to expose the metrics via
+`/metrics`. The plugin will be downloaded from Apache Maven Central, when the plugin is enabled directly or the
+Prometheus feature has been enabled. The plugin is a simple JAR file, which will be stored in `/app/data/plugins`.
+
+Furthermore, Reposilite will not expose the metrics without protection. For this reason must be defined basic auth
+credentials. By default generate the helm chart a random username and password for basic auth. For debugging propose can
+be set the credentials manually.
+
+The following example enable Prometheus metrics with custom basic auth credentials:
+
+```bash
+CHART_VERSION=0.1.3
+helm install --version "${CHART_VERSION}" reposilite volker.raschek/reposilite \
+  --set 'prometheus.metrics.enabled=true' \
+  --set 'prometheus.metrics.basicAuthUsername=my-username' \
+  --set 'prometheus.metrics.basicAuthUsername=my-password'
+```
+
 ## Parameters
 
 ### Global
@@ -178,44 +203,56 @@ networkPolicies:
 | `nameOverride`     | Individual release name suffix.           | `""`  |
 | `fullnameOverride` | Override the complete release name logic. | `""`  |
 
+### Config
+
+| Name                                | Description                                                                                                                                    | Value                                                                                                                   |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `config.plugins.prometheus.enabled` | Download the Prometheus plugin via an additional init container. The Prometheus plugin will automatically enabled, when Prometheus is enabled. | `false`                                                                                                                 |
+| `config.plugins.prometheus.url`     | URL to download the plugin.                                                                                                                    | `https://maven.reposilite.com/releases/com/reposilite/plugin/prometheus-plugin/3.5.25/prometheus-plugin-3.5.25-all.jar` |
+
 ### Deployment
 
-| Name                                               | Description                                                                                                | Value                 |
-| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------- |
-| `deployment.annotations`                           | Additional deployment annotations.                                                                         | `{}`                  |
-| `deployment.labels`                                | Additional deployment labels.                                                                              | `{}`                  |
-| `deployment.additionalContainers`                  | List of additional containers.                                                                             | `[]`                  |
-| `deployment.affinity`                              | Affinity for the Reposilite deployment.                                                                    | `{}`                  |
-| `deployment.initContainers`                        | List of additional init containers.                                                                        | `[]`                  |
-| `deployment.dnsConfig`                             | dnsConfig of the Reposilite deployment.                                                                    | `{}`                  |
-| `deployment.dnsPolicy`                             | dnsPolicy of the Reposilite deployment.                                                                    | `""`                  |
-| `deployment.hostname`                              | Individual hostname of the pod.                                                                            | `""`                  |
-| `deployment.subdomain`                             | Individual domain of the pod.                                                                              | `""`                  |
-| `deployment.hostNetwork`                           | Use the kernel network namespace of the host system.                                                       | `false`               |
-| `deployment.imagePullSecrets`                      | Secret to use for pulling the image.                                                                       | `[]`                  |
-| `deployment.reposilite.args`                       | Arguments passed to the Reposilite container.                                                              | `[]`                  |
-| `deployment.reposilite.command`                    | Command passed to the Reposilite container.                                                                | `[]`                  |
-| `deployment.reposilite.env`                        | List of environment variables for the Reposilite container.                                                |                       |
-| `deployment.reposilite.envFrom`                    | List of environment variables mounted from configMaps or secrets for the Reposilite container.             | `[]`                  |
-| `deployment.reposilite.image.registry`             | Image registry, eg. `docker.io`.                                                                           | `docker.io`           |
-| `deployment.reposilite.image.repository`           | Image repository, eg. `library/busybox`.                                                                   | `dzikoysk/reposilite` |
-| `deployment.reposilite.image.tag`                  | Custom image tag, eg. `0.1.0`. Defaults to `appVersion`.                                                   | `""`                  |
-| `deployment.reposilite.image.pullPolicy`           | Image pull policy.                                                                                         | `IfNotPresent`        |
-| `deployment.reposilite.resources`                  | CPU and memory resources of the pod.                                                                       | `{}`                  |
-| `deployment.reposilite.securityContext`            | Security context of the container of the deployment.                                                       | `{}`                  |
-| `deployment.reposilite.volumeMounts`               | Additional volume mounts.                                                                                  | `[]`                  |
-| `deployment.nodeSelector`                          | NodeSelector of the Reposilite deployment.                                                                 | `{}`                  |
-| `deployment.priorityClassName`                     | PriorityClassName of the Reposilite deployment.                                                            | `""`                  |
-| `deployment.replicas`                              | Number of replicas for the Reposilite deployment.                                                          | `1`                   |
-| `deployment.restartPolicy`                         | Restart policy of the Reposilite deployment.                                                               | `""`                  |
-| `deployment.securityContext`                       | Security context of the Reposilite deployment.                                                             | `{}`                  |
-| `deployment.strategy.type`                         | Strategy type - `Recreate` or `RollingUpdate`.                                                             | `RollingUpdate`       |
-| `deployment.strategy.rollingUpdate.maxSurge`       | The maximum number of pods that can be scheduled above the desired number of pods during a rolling update. | `1`                   |
-| `deployment.strategy.rollingUpdate.maxUnavailable` | The maximum number of pods that can be unavailable during a rolling update.                                | `1`                   |
-| `deployment.terminationGracePeriodSeconds`         | How long to wait until forcefully kill the pod.                                                            | `60`                  |
-| `deployment.tolerations`                           | Tolerations of the Reposilite deployment.                                                                  | `[]`                  |
-| `deployment.topologySpreadConstraints`             | TopologySpreadConstraints of the Reposilite deployment.                                                    | `[]`                  |
-| `deployment.volumes`                               | Additional volumes to mount into the pods of the reposilite deployment.                                    | `[]`                  |
+| Name                                               | Description                                                                                                | Value                                       |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `deployment.annotations`                           | Additional deployment annotations.                                                                         | `{}`                                        |
+| `deployment.labels`                                | Additional deployment labels.                                                                              | `{}`                                        |
+| `deployment.additionalContainers`                  | List of additional containers.                                                                             | `[]`                                        |
+| `deployment.affinity`                              | Affinity for the Reposilite deployment.                                                                    | `{}`                                        |
+| `deployment.initContainers`                        | List of additional init containers.                                                                        | `[]`                                        |
+| `deployment.dnsConfig`                             | dnsConfig of the Reposilite deployment.                                                                    | `{}`                                        |
+| `deployment.dnsPolicy`                             | dnsPolicy of the Reposilite deployment.                                                                    | `""`                                        |
+| `deployment.hostname`                              | Individual hostname of the pod.                                                                            | `""`                                        |
+| `deployment.subdomain`                             | Individual domain of the pod.                                                                              | `""`                                        |
+| `deployment.hostNetwork`                           | Use the kernel network namespace of the host system.                                                       | `false`                                     |
+| `deployment.imagePullSecrets`                      | Secret to use for pulling the image.                                                                       | `[]`                                        |
+| `deployment.reposilite.args`                       | Arguments passed to the Reposilite container.                                                              | `[]`                                        |
+| `deployment.reposilite.command`                    | Command passed to the Reposilite container.                                                                | `[]`                                        |
+| `deployment.reposilite.env`                        | List of environment variables for the Reposilite container.                                                |                                             |
+| `deployment.reposilite.envFrom`                    | List of environment variables mounted from configMaps or secrets for the Reposilite container.             | `[]`                                        |
+| `deployment.reposilite.image.registry`             | Image registry, eg. `docker.io`.                                                                           | `docker.io`                                 |
+| `deployment.reposilite.image.repository`           | Image repository, eg. `library/busybox`.                                                                   | `dzikoysk/reposilite`                       |
+| `deployment.reposilite.image.tag`                  | Custom image tag, eg. `0.1.0`. Defaults to `appVersion`.                                                   | `""`                                        |
+| `deployment.reposilite.image.pullPolicy`           | Image pull policy.                                                                                         | `IfNotPresent`                              |
+| `deployment.reposilite.resources`                  | CPU and memory resources of the pod.                                                                       | `{}`                                        |
+| `deployment.reposilite.securityContext`            | Security context of the container of the deployment.                                                       | `{}`                                        |
+| `deployment.reposilite.volumeMounts`               | Additional volume mounts.                                                                                  | `[]`                                        |
+| `deployment.nodeSelector`                          | NodeSelector of the Reposilite deployment.                                                                 | `{}`                                        |
+| `deployment.pluginContainer.args`                  | Arguments passed to the plugin container.                                                                  | `["--location","--fail","--max-time","60"]` |
+| `deployment.pluginContainer.image.registry`        | Image registry, eg. `docker.io`.                                                                           | `docker.io`                                 |
+| `deployment.pluginContainer.image.repository`      | Image repository, eg. `curlimages/curl`.                                                                   | `curlimages/curl`                           |
+| `deployment.pluginContainer.image.tag`             | Custom image tag, eg. `0.1.0`.                                                                             | `8.15.0`                                    |
+| `deployment.pluginContainer.image.pullPolicy`      | Image pull policy.                                                                                         | `IfNotPresent`                              |
+| `deployment.priorityClassName`                     | PriorityClassName of the Reposilite deployment.                                                            | `""`                                        |
+| `deployment.replicas`                              | Number of replicas for the Reposilite deployment.                                                          | `1`                                         |
+| `deployment.restartPolicy`                         | Restart policy of the Reposilite deployment.                                                               | `""`                                        |
+| `deployment.securityContext`                       | Security context of the Reposilite deployment.                                                             | `{}`                                        |
+| `deployment.strategy.type`                         | Strategy type - `Recreate` or `RollingUpdate`.                                                             | `RollingUpdate`                             |
+| `deployment.strategy.rollingUpdate.maxSurge`       | The maximum number of pods that can be scheduled above the desired number of pods during a rolling update. | `1`                                         |
+| `deployment.strategy.rollingUpdate.maxUnavailable` | The maximum number of pods that can be unavailable during a rolling update.                                | `1`                                         |
+| `deployment.terminationGracePeriodSeconds`         | How long to wait until forcefully kill the pod.                                                            | `60`                                        |
+| `deployment.tolerations`                           | Tolerations of the Reposilite deployment.                                                                  | `[]`                                        |
+| `deployment.topologySpreadConstraints`             | TopologySpreadConstraints of the Reposilite deployment.                                                    | `[]`                                        |
+| `deployment.volumes`                               | Additional volumes to mount into the pods of the reposilite deployment.                                    | `[]`                                        |
 
 ### Horizontal Pod Autoscaler (HPA)
 
@@ -265,6 +302,39 @@ networkPolicies:
 | `persistentVolumeClaim.new.size`                           | Size of the persistent volume claim.                                                                                                                                                                 | `10Gi`          |
 | `persistentVolumeClaim.new.storageClass`                   | Custom storage class. Left it empty to use the clusters default storage class.                                                                                                                       | `""`            |
 
+### Prometheus
+
+| Name                                                | Description                                                                                                                                  | Value      |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `prometheus.metrics.enabled`                        | Enable of scraping metrics by Prometheus.                                                                                                    | `false`    |
+| `prometheus.metrics.basicAuthUsername`              | Username for basic auth. The username and password is required by reposilite to expose metrics. Default: random alpha numeric string.        | `""`       |
+| `prometheus.metrics.basicAuthPassword`              | Password for basic auth. The username and password is required by reposilite to expose metrics. Default random alpha numeric string.         | `""`       |
+| `prometheus.metrics.podMonitor.enabled`             | Enable creation of a podMonitor. Excludes the existence of a serviceMonitor resource.                                                        | `false`    |
+| `prometheus.metrics.podMonitor.annotations`         | Additional podMonitor annotations.                                                                                                           | `{}`       |
+| `prometheus.metrics.podMonitor.enableHttp2`         | Enable HTTP2.                                                                                                                                | `false`    |
+| `prometheus.metrics.podMonitor.followRedirects`     | FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.                                                                | `false`    |
+| `prometheus.metrics.podMonitor.honorLabels`         | Honor labels.                                                                                                                                | `false`    |
+| `prometheus.metrics.podMonitor.labels`              | Additional podMonitor labels.                                                                                                                | `{}`       |
+| `prometheus.metrics.podMonitor.interval`            | Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.                                    | `60s`      |
+| `prometheus.metrics.podMonitor.path`                | HTTP path of the Reposilite pod for scraping Prometheus metrics.                                                                             | `/metrics` |
+| `prometheus.metrics.podMonitor.port`                | HTTP port of the Reposilite pod for scraping Prometheus metrics.                                                                             | `http`     |
+| `prometheus.metrics.podMonitor.relabelings`         | RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields. | `[]`       |
+| `prometheus.metrics.podMonitor.scrapeTimeout`       | Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.                                         | `30s`      |
+| `prometheus.metrics.podMonitor.scheme`              | HTTP scheme to use for scraping. For example `http` or `https`.                                                                              | `http`     |
+| `prometheus.metrics.podMonitor.tlsConfig`           | TLS configuration to use when scraping the metric endpoint by Prometheus.                                                                    | `{}`       |
+| `prometheus.metrics.serviceMonitor.enabled`         | Enable creation of a serviceMonitor. Excludes the existence of a podMonitor resource.                                                        | `false`    |
+| `prometheus.metrics.serviceMonitor.annotations`     | Additional serviceMonitor annotations.                                                                                                       | `{}`       |
+| `prometheus.metrics.serviceMonitor.labels`          | Additional serviceMonitor labels.                                                                                                            | `{}`       |
+| `prometheus.metrics.serviceMonitor.enableHttp2`     | Enable HTTP2.                                                                                                                                | `false`    |
+| `prometheus.metrics.serviceMonitor.followRedirects` | FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.                                                                | `false`    |
+| `prometheus.metrics.serviceMonitor.honorLabels`     | Honor labels.                                                                                                                                | `false`    |
+| `prometheus.metrics.serviceMonitor.interval`        | Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.                                    | `60s`      |
+| `prometheus.metrics.serviceMonitor.path`            | HTTP path for scraping Prometheus metrics.                                                                                                   | `/metrics` |
+| `prometheus.metrics.serviceMonitor.relabelings`     | RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields. | `[]`       |
+| `prometheus.metrics.serviceMonitor.scrapeTimeout`   | Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.                                         | `30s`      |
+| `prometheus.metrics.serviceMonitor.scheme`          | HTTP scheme to use for scraping. For example `http` or `https`.                                                                              | `http`     |
+| `prometheus.metrics.serviceMonitor.tlsConfig`       | TLS configuration to use when scraping the metric endpoint by Prometheus.                                                                    | `{}`       |
+
 ### Service
 
 | Name                               | Description                                                                                                                                                                                                | Value       |
@@ -280,6 +350,7 @@ networkPolicies:
 | `service.loadBalancerIP`           | LoadBalancer will get created with the IP specified in this field. Requires service from type `LoadBalancer`.                                                                                              | `""`        |
 | `service.loadBalancerSourceRanges` | Source range filter for LoadBalancer. Requires service from type `LoadBalancer`.                                                                                                                           | `[]`        |
 | `service.port`                     | Port to forward the traffic to.                                                                                                                                                                            | `8080`      |
+| `service.scheme`                   | Name of the service port. This name is also used as scheme / port name of the service monitor resource.                                                                                                    | `http`      |
 | `service.sessionAffinity`          | Supports `ClientIP` and `None`. Enable client IP based session affinity via `ClientIP`.                                                                                                                    | `None`      |
 | `service.sessionAffinityConfig`    | Contains the configuration of the session affinity.                                                                                                                                                        | `{}`        |
 | `service.type`                     | Kubernetes service type for the traffic.                                                                                                                                                                   | `ClusterIP` |
