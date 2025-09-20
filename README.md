@@ -205,10 +205,10 @@ helm install --version "${CHART_VERSION}" reposilite volker.raschek/reposilite \
 
 ### Config
 
-| Name                                | Description                                                                                                                                    | Value                                                                                                                   |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `config.plugins.prometheus.enabled` | Download the Prometheus plugin via an additional init container. The Prometheus plugin will automatically enabled, when Prometheus is enabled. | `false`                                                                                                                 |
-| `config.plugins.prometheus.url`     | URL to download the plugin.                                                                                                                    | `https://maven.reposilite.com/releases/com/reposilite/plugin/prometheus-plugin/3.5.25/prometheus-plugin-3.5.25-all.jar` |
+| Name                                | Description                                                                                                                                    | Value                                                                                                                                                     |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `config.plugins.prometheus.enabled` | Download the Prometheus plugin via an additional init container. The Prometheus plugin will automatically enabled, when Prometheus is enabled. | `false`                                                                                                                                                   |
+| `config.plugins.prometheus.url`     | URL to download the plugin.                                                                                                                    | `https://maven.reposilite.com/releases/com/reposilite/plugin/prometheus-plugin/{{ .Chart.AppVersion }}/prometheus-plugin-{{ .Chart.AppVersion }}-all.jar` |
 
 ### Deployment
 
