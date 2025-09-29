@@ -129,6 +129,10 @@ tests:
 - it: Change defaults
   set:
     prometheus.metrics.enabled: true
+    prometheus.metrics.secret.existing.enabled: true
+    prometheus.metrics.secret.existing.secretName: "my-secret"
+    prometheus.metrics.secret.existing.basicAuthUsernameKey: "my-username-key"
+    prometheus.metrics.secret.existing.basicAuthPasswordKey: "my-password-key"
     prometheus.metrics.serviceMonitor.enabled: true
     prometheus.metrics.serviceMonitor.enableHttp2: false
     prometheus.metrics.serviceMonitor.followRedirects: true
@@ -147,6 +151,15 @@ tests:
   asserts:
   - hasDocuments:
       count: 1
+  - isSubset:
+      path: spec.endpoints[0].basicAuth
+      content:
+        password:
+          key: my-password-key
+          name: my-secret
+        username:
+          key: my-username-key
+          name: my-secret
   - equal:
       path: spec.endpoints[0].enableHttp2
       value: false

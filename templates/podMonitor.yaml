@@ -17,10 +17,10 @@ spec:
   podMetricsEndpoints:
   - basicAuth:
       password:
-        key: password
+        key: {{ include "reposilite.secrets.prometheusBasicAuth.passwordKey" . }}
         name: {{ include "reposilite.secrets.prometheusBasicAuth.name" . }}
       username:
-        key: username
+        key: {{ include "reposilite.secrets.prometheusBasicAuth.usernameKey" . }}
         name: {{ include "reposilite.secrets.prometheusBasicAuth.name" . }}
     enableHttp2: {{ required "The enableHttp2 option of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.enableHttp2 }}
     followRedirects: {{ required "The followRedirects option of the podMonitor is not defined!" .Values.prometheus.metrics.podMonitor.followRedirects }}

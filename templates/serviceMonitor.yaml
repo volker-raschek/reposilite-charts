@@ -17,10 +17,10 @@ spec:
   endpoints:
   - basicAuth:
       password:
-        key: password
+        key: {{ include "reposilite.secrets.prometheusBasicAuth.passwordKey" . }}
         name: {{ include "reposilite.secrets.prometheusBasicAuth.name" . }}
       username:
-        key: username
+        key: {{ include "reposilite.secrets.prometheusBasicAuth.usernameKey" . }}
         name: {{ include "reposilite.secrets.prometheusBasicAuth.name" . }}
     enableHttp2: {{ required "The enableHttp2 option of the serviceMonitor is not defined!" .Values.prometheus.metrics.serviceMonitor.enableHttp2 }}
     followRedirects: {{ required "The followRedirects option of the serviceMonitor is not defined!" .Values.prometheus.metrics.serviceMonitor.followRedirects }}

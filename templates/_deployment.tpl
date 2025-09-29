@@ -27,8 +27,8 @@
 {{- end }}
 
 {{- if or (eq (include "reposilite.podMonitor.enabled" $ ) "true") (eq (include "reposilite.serviceMonitor.enabled" $ ) "true") -}}
-{{- $env = concat $env (list (dict "name" "REPOSILITE_PROMETHEUS_USER" "valueFrom" (dict "secretKeyRef" (dict "name" (include "reposilite.secrets.prometheusBasicAuth.name" $) "key" "username")))) }}
-{{- $env = concat $env (list (dict "name" "REPOSILITE_PROMETHEUS_PASSWORD" "valueFrom" (dict "secretKeyRef" (dict "name" (include "reposilite.secrets.prometheusBasicAuth.name" $) "key" "password")))) }}
+{{- $env = concat $env (list (dict "name" "REPOSILITE_PROMETHEUS_USER" "valueFrom" (dict "secretKeyRef" (dict "name" (include "reposilite.secrets.prometheusBasicAuth.name" $) "key" (include "reposilite.secrets.prometheusBasicAuth.usernameKey" $))))) }}
+{{- $env = concat $env (list (dict "name" "REPOSILITE_PROMETHEUS_PASSWORD" "valueFrom" (dict "secretKeyRef" (dict "name" (include "reposilite.secrets.prometheusBasicAuth.name" $) "key" (include "reposilite.secrets.prometheusBasicAuth.passwordKey" $))))) }}
 {{- end }}
 
 {{ toYaml (dict "env" $env) }}

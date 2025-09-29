@@ -304,36 +304,42 @@ helm install --version "${CHART_VERSION}" reposilite volker.raschek/reposilite \
 
 ### Prometheus
 
-| Name                                                | Description                                                                                                                                  | Value      |
-| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `prometheus.metrics.enabled`                        | Enable of scraping metrics by Prometheus.                                                                                                    | `false`    |
-| `prometheus.metrics.basicAuthUsername`              | Username for basic auth. The username and password is required by reposilite to expose metrics. Default: random alpha numeric string.        | `""`       |
-| `prometheus.metrics.basicAuthPassword`              | Password for basic auth. The username and password is required by reposilite to expose metrics. Default random alpha numeric string.         | `""`       |
-| `prometheus.metrics.podMonitor.enabled`             | Enable creation of a podMonitor. Excludes the existence of a serviceMonitor resource.                                                        | `false`    |
-| `prometheus.metrics.podMonitor.annotations`         | Additional podMonitor annotations.                                                                                                           | `{}`       |
-| `prometheus.metrics.podMonitor.enableHttp2`         | Enable HTTP2.                                                                                                                                | `false`    |
-| `prometheus.metrics.podMonitor.followRedirects`     | FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.                                                                | `false`    |
-| `prometheus.metrics.podMonitor.honorLabels`         | Honor labels.                                                                                                                                | `false`    |
-| `prometheus.metrics.podMonitor.labels`              | Additional podMonitor labels.                                                                                                                | `{}`       |
-| `prometheus.metrics.podMonitor.interval`            | Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.                                    | `60s`      |
-| `prometheus.metrics.podMonitor.path`                | HTTP path of the Reposilite pod for scraping Prometheus metrics.                                                                             | `/metrics` |
-| `prometheus.metrics.podMonitor.port`                | HTTP port of the Reposilite pod for scraping Prometheus metrics.                                                                             | `http`     |
-| `prometheus.metrics.podMonitor.relabelings`         | RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields. | `[]`       |
-| `prometheus.metrics.podMonitor.scrapeTimeout`       | Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.                                         | `30s`      |
-| `prometheus.metrics.podMonitor.scheme`              | HTTP scheme to use for scraping. For example `http` or `https`.                                                                              | `http`     |
-| `prometheus.metrics.podMonitor.tlsConfig`           | TLS configuration to use when scraping the metric endpoint by Prometheus.                                                                    | `{}`       |
-| `prometheus.metrics.serviceMonitor.enabled`         | Enable creation of a serviceMonitor. Excludes the existence of a podMonitor resource.                                                        | `false`    |
-| `prometheus.metrics.serviceMonitor.annotations`     | Additional serviceMonitor annotations.                                                                                                       | `{}`       |
-| `prometheus.metrics.serviceMonitor.labels`          | Additional serviceMonitor labels.                                                                                                            | `{}`       |
-| `prometheus.metrics.serviceMonitor.enableHttp2`     | Enable HTTP2.                                                                                                                                | `false`    |
-| `prometheus.metrics.serviceMonitor.followRedirects` | FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.                                                                | `false`    |
-| `prometheus.metrics.serviceMonitor.honorLabels`     | Honor labels.                                                                                                                                | `false`    |
-| `prometheus.metrics.serviceMonitor.interval`        | Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.                                    | `60s`      |
-| `prometheus.metrics.serviceMonitor.path`            | HTTP path for scraping Prometheus metrics.                                                                                                   | `/metrics` |
-| `prometheus.metrics.serviceMonitor.relabelings`     | RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields. | `[]`       |
-| `prometheus.metrics.serviceMonitor.scrapeTimeout`   | Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.                                         | `30s`      |
-| `prometheus.metrics.serviceMonitor.scheme`          | HTTP scheme to use for scraping. For example `http` or `https`.                                                                              | `http`     |
-| `prometheus.metrics.serviceMonitor.tlsConfig`       | TLS configuration to use when scraping the metric endpoint by Prometheus.                                                                    | `{}`       |
+| Name                                                      | Description                                                                                                                                  | Value      |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `prometheus.metrics.enabled`                              | Enable of scraping metrics by Prometheus.                                                                                                    | `false`    |
+| `prometheus.metrics.secret.existing.enabled`              | Use an existing secret containing the basic auth credentials.                                                                                | `false`    |
+| `prometheus.metrics.secret.existing.secretName`           | Name of the secret containing the basic auth credentials.                                                                                    | `""`       |
+| `prometheus.metrics.secret.existing.basicAuthUsernameKey` | Name of the key in the secret that contains the username for basic auth.                                                                     | `""`       |
+| `prometheus.metrics.secret.existing.basicAuthPasswordKey` | Name of the key in the secret that contains the password for basic auth.                                                                     | `""`       |
+| `prometheus.metrics.secret.new.annotations`               | Additional secret annotations.                                                                                                               | `{}`       |
+| `prometheus.metrics.secret.new.labels`                    | Additional secret labels.                                                                                                                    | `{}`       |
+| `prometheus.metrics.secret.new.basicAuthUsername`         | Username for basic auth. The username and password is required by reposilite to expose metrics. Default: random alpha numeric string.        | `""`       |
+| `prometheus.metrics.secret.new.basicAuthPassword`         | Password for basic auth. The username and password is required by reposilite to expose metrics. Default random alpha numeric string.         | `""`       |
+| `prometheus.metrics.podMonitor.enabled`                   | Enable creation of a podMonitor. Excludes the existence of a serviceMonitor resource.                                                        | `false`    |
+| `prometheus.metrics.podMonitor.annotations`               | Additional podMonitor annotations.                                                                                                           | `{}`       |
+| `prometheus.metrics.podMonitor.enableHttp2`               | Enable HTTP2.                                                                                                                                | `false`    |
+| `prometheus.metrics.podMonitor.followRedirects`           | FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.                                                                | `false`    |
+| `prometheus.metrics.podMonitor.honorLabels`               | Honor labels.                                                                                                                                | `false`    |
+| `prometheus.metrics.podMonitor.labels`                    | Additional podMonitor labels.                                                                                                                | `{}`       |
+| `prometheus.metrics.podMonitor.interval`                  | Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.                                    | `60s`      |
+| `prometheus.metrics.podMonitor.path`                      | HTTP path of the Reposilite pod for scraping Prometheus metrics.                                                                             | `/metrics` |
+| `prometheus.metrics.podMonitor.port`                      | HTTP port of the Reposilite pod for scraping Prometheus metrics.                                                                             | `http`     |
+| `prometheus.metrics.podMonitor.relabelings`               | RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields. | `[]`       |
+| `prometheus.metrics.podMonitor.scrapeTimeout`             | Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.                                         | `30s`      |
+| `prometheus.metrics.podMonitor.scheme`                    | HTTP scheme to use for scraping. For example `http` or `https`.                                                                              | `http`     |
+| `prometheus.metrics.podMonitor.tlsConfig`                 | TLS configuration to use when scraping the metric endpoint by Prometheus.                                                                    | `{}`       |
+| `prometheus.metrics.serviceMonitor.enabled`               | Enable creation of a serviceMonitor. Excludes the existence of a podMonitor resource.                                                        | `false`    |
+| `prometheus.metrics.serviceMonitor.annotations`           | Additional serviceMonitor annotations.                                                                                                       | `{}`       |
+| `prometheus.metrics.serviceMonitor.labels`                | Additional serviceMonitor labels.                                                                                                            | `{}`       |
+| `prometheus.metrics.serviceMonitor.enableHttp2`           | Enable HTTP2.                                                                                                                                | `false`    |
+| `prometheus.metrics.serviceMonitor.followRedirects`       | FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.                                                                | `false`    |
+| `prometheus.metrics.serviceMonitor.honorLabels`           | Honor labels.                                                                                                                                | `false`    |
+| `prometheus.metrics.serviceMonitor.interval`              | Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.                                    | `60s`      |
+| `prometheus.metrics.serviceMonitor.path`                  | HTTP path for scraping Prometheus metrics.                                                                                                   | `/metrics` |
+| `prometheus.metrics.serviceMonitor.relabelings`           | RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields. | `[]`       |
+| `prometheus.metrics.serviceMonitor.scrapeTimeout`         | Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.                                         | `30s`      |
+| `prometheus.metrics.serviceMonitor.scheme`                | HTTP scheme to use for scraping. For example `http` or `https`.                                                                              | `http`     |
+| `prometheus.metrics.serviceMonitor.tlsConfig`             | TLS configuration to use when scraping the metric endpoint by Prometheus.                                                                    | `{}`       |
 
 ### Service
 

@@ -9,10 +9,10 @@ templates:
 - templates/deployment.yaml
 - templates/secretPrometheusBasicAuth.yaml
 tests:
-- it: Rendering default environment variables with enabled prometheus metrics podMonitor
+- it: Rendering default environment variables with enabled prometheus metrics serviceMonitor
   set:
     prometheus.metrics.enabled: true
-    prometheus.metrics.podMonitor.enabled: true
+    prometheus.metrics.serviceMonitor.enabled: true
   asserts:
   - exists:
       path: spec.template.metadata.annotations.checksum/secret-reposilite-unittest-basic-auth-credentials
@@ -43,7 +43,7 @@ tests:
     prometheus.metrics.secret.existing.basicAuthUsernameKey: my-username-key
     prometheus.metrics.secret.existing.basicAuthPasswordKey: my-password-key
     prometheus.metrics.secret.existing.secretName: my-secret
-    prometheus.metrics.podMonitor.enabled: true
+    prometheus.metrics.serviceMonitor.enabled: true
   asserts:
   - notExists:
       path: spec.template.metadata.annotations.checksum/secret-reposilite-unittest-basic-auth-credentials
@@ -74,7 +74,7 @@ tests:
     prometheus.metrics.secret.existing.basicAuthUsernameKey: "my-username-key"
     prometheus.metrics.secret.existing.basicAuthPasswordKey: "my-password-key"
     prometheus.metrics.secret.existing.secretName: ""
-    prometheus.metrics.podMonitor.enabled: true
+    prometheus.metrics.serviceMonitor.enabled: true
   asserts:
   - failedTemplate:
       errorMessage: "Name of the existing secret that contains the credentials for basic auth is not defined!"
@@ -87,7 +87,7 @@ tests:
     prometheus.metrics.secret.existing.basicAuthUsernameKey: ""
     prometheus.metrics.secret.existing.basicAuthPasswordKey: "my-password-key"
     prometheus.metrics.secret.existing.secretName: "my-secret"
-    prometheus.metrics.podMonitor.enabled: true
+    prometheus.metrics.serviceMonitor.enabled: true
   asserts:
   - failedTemplate:
       errorMessage: "Name of the key in the secret that contains the username for basic auth is not defined!"
@@ -100,7 +100,7 @@ tests:
     prometheus.metrics.secret.existing.basicAuthUsernameKey: "my-username-key"
     prometheus.metrics.secret.existing.basicAuthPasswordKey: ""
     prometheus.metrics.secret.existing.secretName: "my-secret"
-    prometheus.metrics.podMonitor.enabled: true
+    prometheus.metrics.serviceMonitor.enabled: true
   asserts:
   - failedTemplate:
       errorMessage: "Name of the key in the secret that contains the password for basic auth is not defined!"

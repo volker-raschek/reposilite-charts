@@ -396,13 +396,30 @@ persistentVolumeClaim:
 
 ## @section Prometheus
 prometheus:
-  ## @param prometheus.metrics.enabled Enable of scraping metrics by Prometheus.
-  ## @param prometheus.metrics.basicAuthUsername Username for basic auth. The username and password is required by reposilite to expose metrics. Default: random alpha numeric string.
-  ## @param prometheus.metrics.basicAuthPassword Password for basic auth. The username and password is required by reposilite to expose metrics. Default random alpha numeric string.
   metrics:
+    ## @param prometheus.metrics.enabled Enable of scraping metrics by Prometheus.
     enabled: false
-    basicAuthUsername: ""
-    basicAuthPassword: ""
+
+    secret:
+      ## @param prometheus.metrics.secret.existing.enabled Use an existing secret containing the basic auth credentials.
+      ## @param prometheus.metrics.secret.existing.secretName Name of the secret containing the basic auth credentials.
+      ## @param prometheus.metrics.secret.existing.basicAuthUsernameKey Name of the key in the secret that contains the username for basic auth.
+      ## @param prometheus.metrics.secret.existing.basicAuthPasswordKey Name of the key in the secret that contains the password for basic auth.
+      existing:
+        enabled: false
+        secretName: ""
+        basicAuthUsernameKey: ""
+        basicAuthPasswordKey: ""
+
+      ## @param prometheus.metrics.secret.new.annotations Additional secret annotations.
+      ## @param prometheus.metrics.secret.new.labels Additional secret labels.
+      ## @param prometheus.metrics.secret.new.basicAuthUsername Username for basic auth. The username and password is required by reposilite to expose metrics. Default: random alpha numeric string.
+      ## @param prometheus.metrics.secret.new.basicAuthPassword Password for basic auth. The username and password is required by reposilite to expose metrics. Default random alpha numeric string.
+      new:
+        annotations: {}
+        labels: {}
+        basicAuthUsername: ""
+        basicAuthPassword: ""
 
     ## @param prometheus.metrics.podMonitor.enabled Enable creation of a podMonitor. Excludes the existence of a serviceMonitor resource.
     ## @param prometheus.metrics.podMonitor.annotations Additional podMonitor annotations.
