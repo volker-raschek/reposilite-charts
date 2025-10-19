@@ -215,15 +215,38 @@ can lead to unnecessary notifications from ArgoCD.
 To avoid this, the annotation with the shasum must be ignored. Below is a diff that adds the `Application` to ignore all
 annotations with the prefix `checksum`.
 
+> [WARN]
+> Configurations of `ignoreDifferences` always refer to the determination of a drift and whether a possible sync is
+> necessary. The selected attributes are only ignored in deployment if `RespectIgnoreDifferences=true` has been defined.
+> Further information can be found in the ArgoCD
+> [documentation](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#respect-ignore-differences-configs).
+
 ```diff
   apiVersion: argoproj.io/v1alpha1
   kind: Application
   spec:
 +   ignoreDifferences:
-+   - group: apps/v1
++   - group: apps
 +     kind: Deployment
 +     jqPathExpressions:
 +     - '.spec.template.metadata.annotations | with_entries(select(.key | startswith("checksum")))'
+```
+
+If the reloader is configured as described in section [TLS certificate rotation](#tls-certificate-rotation), ensure that
+the shasum defined as annotation or environment variable with the prefix `stakater` is also ignored. Below are some
+examples how to extend the `ignoreDifferences` configuration.
+
+```diff
+  apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  spec:
+    ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jqPathExpressions:
+      - '.spec.template.metadata.annotations | with_entries(select(.key | startswith("checksum")))'
++     - '.spec.template.metadata.annotations | with_entries(select(.key | startswith("stakater")))'
++     - '.spec.template.spec.containers[].env[] | select(.name | startswith("STAKATER_"))'
 ```
 
 ## Parameters
