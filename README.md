@@ -220,8 +220,8 @@ Below is a diff that adds the `Application` to ignore all annotations with the p
 
 > [!WARNING]
 > Configurations of `ignoreDifferences` always refer to the determination of a drift and whether a possible sync is
-> necessary. The selected attributes are only ignored in deployment if `RespectIgnoreDifferences=true` has been defined.
-> Further information can be found in the ArgoCD
+> necessary. If the selected attributes should also be ignored in deployment afterwards, define
+> `RespectIgnoreDifferences=true` in your `Application` resource. Further information can be found in the ArgoCD
 > [documentation](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#respect-ignore-differences-configs).
 
 ```diff
