@@ -218,7 +218,7 @@ Deployments](https://helm.sh/docs/howto/charts_tips_and_tricks/#automatically-ro
 
 Below is a diff that adds the `Application` to ignore all annotations with the prefix `checksum`.
 
-> [WARN]
+> [!WARNING]
 > Configurations of `ignoreDifferences` always refer to the determination of a drift and whether a possible sync is
 > necessary. The selected attributes are only ignored in deployment if `RespectIgnoreDifferences=true` has been defined.
 > Further information can be found in the ArgoCD
@@ -237,7 +237,7 @@ Below is a diff that adds the `Application` to ignore all annotations with the p
 
 The definition of ignoreDifferences ensures that annotations with the prefix checksum are ignored during a diff.
 
-> [TIP]
+> [!TIP]
 > If the [reloader](https://github.com/stakater/Reloader) is configured as described in section [TLS certificate
 > rotation](#tls-certificate-rotation), ensure that the shasum defined as annotation or environment variable is also
 > ignored. The [reloader](https://github.com/stakater/Reloader) will modify the deployment based on his configuration
