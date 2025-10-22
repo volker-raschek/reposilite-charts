@@ -78,35 +78,35 @@ tests:
     service.internalTrafficPolicy: ""
   asserts:
   - failedTemplate:
-    errorMessage: No internal traffic policy defined!
+      errorMessage: No internal traffic policy defined!
 
 - it: Require port.
   set:
     service.port: ""
   asserts:
   - failedTemplate:
-    errorMessage: No service port defined!
+      errorMessage: No service port defined!
 
 - it: Require scheme.
   set:
     service.scheme: ""
   asserts:
   - failedTemplate:
-    errorMessage: No service scheme defined!
+      errorMessage: The scheme of the serviceMonitor is not defined!
 
 - it: Require sessionAffinity.
   set:
     service.sessionAffinity: ""
   asserts:
   - failedTemplate:
-    errorMessage: No session affinity defined!
+      errorMessage: No session affinity defined!
 
 - it: Require service type.
   set:
     service.type: ""
   asserts:
   - failedTemplate:
-    errorMessage: No service type defined!
+      errorMessage: No service type defined!
 
 - it: Render service with custom annotations and labels.
   set:

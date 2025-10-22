@@ -13,6 +13,8 @@ tests:
   set:
     prometheus.metrics.enabled: true
     prometheus.metrics.serviceMonitor.enabled: true
+    prometheus.metrics.secret.new.basicAuthPassword: "my-password"
+    prometheus.metrics.secret.new.basicAuthUsername: "my-username"
   asserts:
   - exists:
       path: spec.template.metadata.annotations.checksum/secret-reposilite-unittest-basic-auth-credentials
