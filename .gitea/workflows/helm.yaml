@@ -14,8 +14,7 @@ jobs:
   helm-lint:
     container:
       image: docker.io/volkerraschek/helm:3.19.2
-    runs-on:
-    - ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Install tooling
       run: |
@@ -29,8 +28,7 @@ jobs:
   helm-unittest:
     container:
       image: docker.io/volkerraschek/helm:3.19.2
-    runs-on:
-    - ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Install tooling
       run: |
