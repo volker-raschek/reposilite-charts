@@ -97,24 +97,19 @@ helm install --version "${CHART_VERSION}" reposilite volker.raschek/reposilite \
 #### TLS certificate rotation
 
 If Reposilite uses TLS certificates that are mounted as a secret in the container file system like the example
-[above](#tls-encryption), Reposlite will not automatically apply them when the TLS certificates are rotated. Such a
+[above](#tls-encryption), Reposilite will not automatically apply them when the TLS certificates are rotated. Such a
 rotation can be for example triggered, when the [cert-manager](https://cert-manager.io/) issues new TLS certificates
 before expiring.
 
 Until Reposilite does not support rotating TLS certificate a workaround can be applied. For example stakater's
 [reloader](https://github.com/stakater/Reloader) controller can be used to trigger a rolling update. The following
-annotation must be added to instruct the reloader controller to trigger a rolling update, when the mounted configMaps
-and secrets have been changed.
+annotation must be added to instruct the reloader controller to trigger a rolling update, when the mounted secret has
+been changed.
 
-```yaml
-deployment:
-  annotations:
-    reloader.stakater.com/auto: "true"
-```
-
-Instead of triggering a rolling update for configMap and secret resources, this action can also be defined for
-individual items. For example, when the secret named `reposilite-tls` is mounted and the reloader controller should only
-listen for changes of this secret:
+> [!IMPORTANT]
+> The Helm chart already adds annotations to trigger a rolling release. Helm describes this approach under
+> [Automatically Roll Deployments](https://helm.sh/docs/howto/charts_tips_and_tricks/#automatically-roll-deployments).
+> For this reason, **only external** configMaps or secrets need to be monitored by reloader.
 
 ```yaml
 deployment:
@@ -132,8 +127,8 @@ stakater's reloader.
 ```diff
   deployment:
     annotations:
-      reloader.stakater.com/auto: "true"
 +     reloader.stakater.com/rollout-strategy: "restart"
+      secret.reloader.stakater.com/reload: "reposilite-tls"
 ```
 
 #### Network policies
