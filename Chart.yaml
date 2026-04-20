@@ -5,7 +5,7 @@ annotations:
     - name: support
       url: https://git.cryptic.systems/volker.raschek/reposilite-charts/issues
 apiVersion: v2
-appVersion: "3.5.26"
+appVersion: "3.5.28"
 description: |
   Lightweight and easy-to-use repository management software
   dedicated for the Maven based artifacts in the JVM ecosystem
