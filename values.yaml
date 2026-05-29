@@ -232,6 +232,8 @@ deployment:
 ## @section GatewayAPI
 gatewayAPI:
   ## @param gatewayAPI.enabled Enable the Gateway API resources. Requires Kubernetes v1.19 or higher, the CRD's and a compatible gateway controller.
+  enable: false
+
   core:
     ## @param gatewayAPI.core.backendTLSPolicy.enabled Enable the BackendTLSPolicy resource. Requires also `gatewayAPI.enabled` to be `true`.
     ## @param gatewayAPI.core.backendTLSPolicy.annotations Additional annotations for the BackendTLSPolicy.
@@ -270,15 +272,15 @@ gatewayAPI:
       #   sectionName: reposilite-http
 
   nginx:
-      ## @param gatewayAPI.nginx.clientSettingsPolicy.enabled Enable the ClientSettingsPolicy resource. Requires also `gatewayAPI.enabled` to be `true`.
-      ## @param gatewayAPI.nginx.clientSettingsPolicy.annotations Additional annotations for the ClientSettingsPolicy.
-      ## @param gatewayAPI.nginx.clientSettingsPolicy.labels Additional labels for the ClientSettingsPolicy.
-      ## @param gatewayAPI.nginx.clientSettingsPolicy.clientMaxBodySize ClientMaxBodySize sets the maximum allowed size of the client request body. If not specified, the default of the nginx gateway controller is used.
-      ## @param gatewayAPI.nginx.clientSettingsPolicy.clientBodyTimeout ClientBodyTimeout sets the timeout for reading the client request body. If not specified, the default of the nginx gateway controller is used.
-      ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveRequests KeepaliveRequests sets the maximum number of requests that can be served through one keepalive connection. If not specified, the default of the nginx gateway controller is used.
-      ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveTime KeepaliveTime sets the time a keepalive connection is kept open. If not specified, the default of the nginx gateway controller is used.
-      ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveTimeout KeepaliveTimeout sets the time a client has to wait for the response of a request until the connection is closed. If not specified, the default of the nginx gateway controller is used.
-      ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveMinTimeout KeepaliveMinTimeout sets the minimum time a client has to wait for the response of a request until the connection is closed. If not specified, the default of the nginx gateway controller is used.
+    ## @param gatewayAPI.nginx.clientSettingsPolicy.enabled Enable the ClientSettingsPolicy resource. Requires also `gatewayAPI.enabled` to be `true`.
+    ## @param gatewayAPI.nginx.clientSettingsPolicy.annotations Additional annotations for the ClientSettingsPolicy.
+    ## @param gatewayAPI.nginx.clientSettingsPolicy.labels Additional labels for the ClientSettingsPolicy.
+    ## @param gatewayAPI.nginx.clientSettingsPolicy.clientMaxBodySize ClientMaxBodySize sets the maximum allowed size of the client request body. If not specified, the default of the nginx gateway controller is used.
+    ## @param gatewayAPI.nginx.clientSettingsPolicy.clientBodyTimeout ClientBodyTimeout sets the timeout for reading the client request body. If not specified, the default of the nginx gateway controller is used.
+    ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveRequests KeepaliveRequests sets the maximum number of requests that can be served through one keepalive connection. If not specified, the default of the nginx gateway controller is used.
+    ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveTime KeepaliveTime sets the time a keepalive connection is kept open. If not specified, the default of the nginx gateway controller is used.
+    ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveTimeout KeepaliveTimeout sets the time a client has to wait for the response of a request until the connection is closed. If not specified, the default of the nginx gateway controller is used.
+    ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveMinTimeout KeepaliveMinTimeout sets the minimum time a client has to wait for the response of a request until the connection is closed. If not specified, the default of the nginx gateway controller is used.
     clientSettingsPolicy:
       enabled: false
       annotations: {}
