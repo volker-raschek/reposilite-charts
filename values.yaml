@@ -247,7 +247,8 @@ gatewayAPI:
         # caCertificateRefs:
         # - group: ""
         #   kind: Secret
-        #   name: "reposilite-tls"
+        #   name: "reposilite-ca"
+        # hostname: "reposilite"
 
     ## @param gatewayAPI.core.httpRoute.enabled Enable the HTTPRoute resource. Requires also `gatewayAPI.enabled` and `service.enabled` to be `true`.
     ## @param gatewayAPI.core.httpRoute.annotations Additional annotations for the HTTPRoute.

@@ -1,17 +1,17 @@
 chart:
   appVersion: 0.1.0
   version: 0.1.0
-suite: BackendTLSConfig template
+suite: backendTLSPolicy template
 release:
   name: reposilite-unittest
   namespace: testing
 templates:
-- templates/backendTLSConfig.yaml
+- templates/backendTLSPolicy.yaml
 tests:
 - it: Skip rendering when disabled 1/6
   set:
     gatewayAPI.enabled: false
-    gatewayAPI.core.backendTLSConfig.enabled: false
+    gatewayAPI.core.backendTLSPolicy.enabled: false
     service.enabled: false
   asserts:
   - hasDocuments:
@@ -20,7 +20,7 @@ tests:
 - it: Skip rendering when disabled 2/6
   set:
     gatewayAPI.enabled: true
-    gatewayAPI.core.backendTLSConfig.enabled: false
+    gatewayAPI.core.backendTLSPolicy.enabled: false
     service.enabled: false
   asserts:
   - hasDocuments:
@@ -29,7 +29,7 @@ tests:
 - it: Skip rendering when disabled 3/6
   set:
     gatewayAPI.enabled: false
-    gatewayAPI.core.backendTLSConfig.enabled: true
+    gatewayAPI.core.backendTLSPolicy.enabled: true
     service.enabled: false
   asserts:
   - hasDocuments:
@@ -38,7 +38,7 @@ tests:
 - it: Skip rendering when disabled 4/6
   set:
     gatewayAPI.enabled: false
-    gatewayAPI.core.backendTLSConfig.enabled: false
+    gatewayAPI.core.backendTLSPolicy.enabled: false
     service.enabled: true
   asserts:
   - hasDocuments:
@@ -47,7 +47,7 @@ tests:
 - it: Skip rendering when disabled 5/6
   set:
     gatewayAPI.enabled: true
-    gatewayAPI.core.backendTLSConfig.enabled: false
+    gatewayAPI.core.backendTLSPolicy.enabled: false
     service.enabled: true
   asserts:
   - hasDocuments:
@@ -56,7 +56,7 @@ tests:
 - it: Skip rendering when disabled 6/6
   set:
     gatewayAPI.enabled: true
-    gatewayAPI.core.backendTLSConfig.enabled: true
+    gatewayAPI.core.backendTLSPolicy.enabled: true
     service.enabled: false
   asserts:
   - hasDocuments:
@@ -65,7 +65,7 @@ tests:
 - it: Render default values
   set:
     gatewayAPI.enabled: true
-    gatewayAPI.core.backendTLSConfig.enabled: true
+    gatewayAPI.core.backendTLSPolicy.enabled: true
     service.enabled: true
   asserts:
   - hasDocuments:
@@ -87,7 +87,7 @@ tests:
 - it: Render with custom annotations and labels
   set:
     gatewayAPI.enabled: true
-    gatewayAPI.core.backendTLSConfig:
+    gatewayAPI.core.backendTLSPolicy:
       enabled: true
       annotations:
         foo: bar
@@ -112,8 +112,8 @@ tests:
 - it: Render with custom validation
   set:
     gatewayAPI.enabled: true
-    gatewayAPI.core.backendTLSConfig.enabled: true
-    gatewayAPI.core.backendTLSConfig.validation:
+    gatewayAPI.core.backendTLSPolicy.enabled: true
+    gatewayAPI.core.backendTLSPolicy.validation:
       caCertificateRefs:
         - group: ""
           kind: Secret

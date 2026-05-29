@@ -2,18 +2,18 @@
 
 {{/* annotations */}}
 
-{{- define "reposilite.backendTLSConfig.annotations" -}}
+{{- define "reposilite.backendTLSPolicy.annotations" -}}
 {{ include "reposilite.annotations" . }}
-{{- if .Values.gatewayAPI.core.backendTLSConfig.annotations }}
-{{ toYaml .Values.gatewayAPI.core.backendTLSConfig.annotations }}
+{{- if .Values.gatewayAPI.core.backendTLSPolicy.annotations }}
+{{ toYaml .Values.gatewayAPI.core.backendTLSPolicy.annotations }}
 {{- end }}
 {{- end }}
 
 {{/* enabled */}}
 
-{{- define "reposilite.backendTLSConfig.enabled" -}}
+{{- define "reposilite.backendTLSPolicy.enabled" -}}
 {{- if and .Values.gatewayAPI.enabled
-           .Values.gatewayAPI.core.backendTLSConfig.enabled
+           .Values.gatewayAPI.core.backendTLSPolicy.enabled
            .Values.service.enabled
 -}}
 true
@@ -24,9 +24,9 @@ false
 
 {{/* labels */}}
 
-{{- define "reposilite.backendTLSConfig.labels" -}}
+{{- define "reposilite.backendTLSPolicy.labels" -}}
 {{ include "reposilite.labels" . }}
-{{- if .Values.gatewayAPI.core.backendTLSConfig.labels }}
-{{ toYaml .Values.gatewayAPI.core.backendTLSConfig.labels }}
+{{- if .Values.gatewayAPI.core.backendTLSPolicy.labels }}
+{{ toYaml .Values.gatewayAPI.core.backendTLSPolicy.labels }}
 {{- end }}
 {{- end }}
