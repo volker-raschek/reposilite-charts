@@ -232,7 +232,7 @@ deployment:
 ## @section GatewayAPI
 gatewayAPI:
   ## @param gatewayAPI.enabled Enable the Gateway API resources. Requires Kubernetes v1.19 or higher, the CRD's and a compatible gateway controller.
-  enable: false
+  enabled: false
 
   core:
     ## @param gatewayAPI.core.backendTLSPolicy.enabled Enable the BackendTLSPolicy resource. Requires also `gatewayAPI.enabled` to be `true`.
@@ -253,7 +253,7 @@ gatewayAPI:
     ## @param gatewayAPI.core.httpRoute.annotations Additional annotations for the HTTPRoute.
     ## @param gatewayAPI.core.httpRoute.labels Additional labels for the HTTPRoute.
     ## @param gatewayAPI.core.httpRoute.hostnames Hostnames for the HTTPRoute.
-    ## @param gatewayAPI.core.httpRoute.matches Match conditions for the HTTPRoute. You can specify path based match conditions to route traffic to the Reposilite service.
+    ## @skip gatewayAPI.core.httpRoute.matches Match conditions for the HTTPRoute. You can specify path based match conditions to route traffic to the Reposilite service.
     ## @param gatewayAPI.core.httpRoute.parentRefs ParentRefs for the HTTPRoute. You can specify parentRefs to bind the HTTPRoute to specific Gateway resources.
     httpRoute:
       enabled: false
