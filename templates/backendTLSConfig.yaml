@@ -1,0 +1,25 @@
+{{- if eq (include "reposilite.backendTLSConfig.enabled" $) "true" }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  {{- with (include "reposilite.backendTLSConfig.annotations" . | fromYaml) }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with (include "reposilite.backendTLSConfig.labels" . | fromYaml) }}
+  labels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ include "reposilite.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: {{ include "reposilite.service.name" . }}
+  {{- with .Values.gatewayAPI.core.backendTLSConfig.validation }}
+  validation:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end -}}
