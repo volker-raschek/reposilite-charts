@@ -229,6 +229,68 @@ deployment:
   #     secretName: my-secret
 
 
+## @section GatewayAPI
+gatewayAPI:
+  ## @param gatewayAPI.enabled Enable the Gateway API resources. Requires Kubernetes v1.19 or higher, the CRD's and a compatible gateway controller.
+  core:
+    ## @param gatewayAPI.core.backendTLSPolicy.enabled Enable the BackendTLSPolicy resource. Requires also `gatewayAPI.enabled` to be `true`.
+    ## @param gatewayAPI.core.backendTLSPolicy.annotations Additional annotations for the BackendTLSPolicy.
+    ## @param gatewayAPI.core.backendTLSPolicy.labels Additional labels for the BackendTLSPolicy.
+    ## @param gatewayAPI.core.backendTLSPolicy.validation Validation configuration for the BackendTLSPolicy. For example, you can specify a trusted CA certificate to validate the TLS connection between the gateway and the Reposilite pod.
+    backendTLSPolicy:
+      enabled: false
+      annotations: {}
+      labels: {}
+      validation: {}
+        # caCertificateRefs:
+        # - group: ""
+        #   kind: Secret
+        #   name: "reposilite-tls"
+
+    ## @param gatewayAPI.core.httpRoute.enabled Enable the HTTPRoute resource. Requires also `gatewayAPI.enabled` and `service.enabled` to be `true`.
+    ## @param gatewayAPI.core.httpRoute.annotations Additional annotations for the HTTPRoute.
+    ## @param gatewayAPI.core.httpRoute.labels Additional labels for the HTTPRoute.
+    ## @param gatewayAPI.core.httpRoute.hostnames Hostnames for the HTTPRoute.
+    ## @param gatewayAPI.core.httpRoute.matches Match conditions for the HTTPRoute. You can specify path based match conditions to route traffic to the Reposilite service.
+    ## @param gatewayAPI.core.httpRoute.parentRefs ParentRefs for the HTTPRoute. You can specify parentRefs to bind the HTTPRoute to specific Gateway resources.
+    httpRoute:
+      enabled: false
+      annotations: {}
+      labels: {}
+      hostnames: []
+      matches:
+      - path:
+          type: PathPrefix
+          value: /
+      parentRefs: []
+      # - name: gateway
+      #   kind: Gateway
+      #   group: gateway.networking.k8s.io
+      #   namespace: default
+      #   sectionName: reposilite-http
+
+  nginx:
+      ## @param gatewayAPI.nginx.clientSettingsPolicy.enabled Enable the ClientSettingsPolicy resource. Requires also `gatewayAPI.enabled` to be `true`.
+      ## @param gatewayAPI.nginx.clientSettingsPolicy.annotations Additional annotations for the ClientSettingsPolicy.
+      ## @param gatewayAPI.nginx.clientSettingsPolicy.labels Additional labels for the ClientSettingsPolicy.
+      ## @param gatewayAPI.nginx.clientSettingsPolicy.clientMaxBodySize ClientMaxBodySize sets the maximum allowed size of the client request body. If not specified, the default of the nginx gateway controller is used.
+      ## @param gatewayAPI.nginx.clientSettingsPolicy.clientBodyTimeout ClientBodyTimeout sets the timeout for reading the client request body. If not specified, the default of the nginx gateway controller is used.
+      ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveRequests KeepaliveRequests sets the maximum number of requests that can be served through one keepalive connection. If not specified, the default of the nginx gateway controller is used.
+      ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveTime KeepaliveTime sets the time a keepalive connection is kept open. If not specified, the default of the nginx gateway controller is used.
+      ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveTimeout KeepaliveTimeout sets the time a client has to wait for the response of a request until the connection is closed. If not specified, the default of the nginx gateway controller is used.
+      ## @param gatewayAPI.nginx.clientSettingsPolicy.keepaliveMinTimeout KeepaliveMinTimeout sets the minimum time a client has to wait for the response of a request until the connection is closed. If not specified, the default of the nginx gateway controller is used.
+    clientSettingsPolicy:
+      enabled: false
+      annotations: {}
+      labels: {}
+      clientMaxBodySize: ""
+      clientBodyTimeout: ""
+      keepaliveRequests:
+      keepaliveTime: ""
+      keepaliveTimeout: ""
+      keepaliveMinTimeout: ""
+
+
 ## @section Horizontal Pod Autoscaler (HPA)
 # In order for the HPA to function successfully, a metric server is required, especially for resource consumption. The
 # metric server enables the CPU and memory utilisation to be recorded. If such a metric server is not available, the HPA
