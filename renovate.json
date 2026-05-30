@@ -14,7 +14,7 @@
         "^Chart\\.yaml$"
       ],
       "matchStrings": [
-        "appVersion: \"(?<currentValue>.*?)\"\\s+"
+        "^appVersion: \"?(?<currentValue>.*)\"?"
       ],
       "datasourceTemplate": "docker",
       "depNameTemplate": "dzikoysk/reposilite",
