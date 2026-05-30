@@ -63,8 +63,9 @@ The following examples serve as individual configurations and as inspiration for
 #### TLS encryption
 
 The example describe how to deploy Reposilite with TLS encryption. If Reposilite is deployed behind reverse proxy, for
-example an ingress nginx controller, please instruct the ingress to establish an TLS encrypted connection to avoid
-connection problems.
+example an ingress nginx controller or Gateway API, please instruct the reserve proxy to establish an TLS encrypted
+connection to avoid connection problems. The documentation describe configuring [ingress NGINX](#ingress-nginx) as well
+as [NGINX Gateway Fabric](#gatewayapi-nginx-fabric).
 
 > [!WARNING]
 > The secret `reposilite-tls` containing the TLS certificate is already present. The keys `ca.crt`, `tls.key` and
@@ -92,6 +93,108 @@ helm install --version "${CHART_VERSION}" reposilite volker.raschek/reposilite \
   --set 'deployment.volumes[0].items[2].path=priv-key.pem' \
   --set 'deployment.volumes[0].secret.secretName=reposilite-tls' \
   --set 'service.port=8443'
+```
+
+##### Ingress NGINX
+
+The following changes must be applied to enable TLS encryption and authentication on-top between the ingress and backend
+service.
+
+> [!IMPORTANT]
+> The HTTP Version between the ingress nginx and backend must be set to `1.1`, as well as the TLS protocol must be set
+> to `TLSv1.2`. Otherwise can't the nginx establish a TLS connection.
+
+The secret `reposilite/ingress-nginx-controller-tls` contains TLS certificates for the nginx ingress controller. The TLS
+certificate must be created manually, for example via [cert-manager](https://cert-manager.io/). It is used by the nginx
+for TLS authentication.
+
+```yaml
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/proxy-ssl-secret: reposilite/ingress-nginx-controller-tls
+    nginx.ingress.kubernetes.io/proxy-ssl-protocols: TLSv1.2
+    nginx.ingress.kubernetes.io/proxy-ssl-name: reposilite
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
+```
+
+##### GatewayAPI: NGINX Fabric
+
+The following changes must be applied to enable TLS encryption and authentication on-top between the ingress and backend
+service.
+
+> [!IMPORTANT]
+> The HTTP Version between the ingress nginx and backend must be set to `1.1`, as well as the TLS protocol must be set
+> to `TLSv1.2`. Otherwise can't the nginx establish a TLS connection.
+
+The `gatewayAPI.core.backendTLSPolicy.validation.caCertificateRefs` must contains at least one secret containing the
+root or intermediate certificate of the issued TLS certificate used by reposilite to be able to validate the TLS certificate.
+
+```yaml
+gatewayAPI:
+  enabled: true
+  core:
+    backendTLSPolicy:
+      enabled: true
+      validation:
+        caCertificateRefs:
+        - group: ""
+          kind: Secret
+          name: "reposilite-ca"
+        hostname: "reposilite"
+
+    httpRoute:
+      hostnames:
+      - reposilite.example.local
+      parentRefs:
+      - name: nginx
+        kind: Gateway
+        group: gateway.networking.k8s.io
+        namespace: my-gateway-namespace
+        sectionName: reposilite-https
+```
+
+The Gateway resource is not part of the helm chart, but for illustrating the configuration example, here a GatewayAPI
+resource with configured backend TLS certificate. The TLS certificates `gateway-frontend-tls` and `gateway-backend-tls`
+must also be created manually, for example via [cert-manager](https://cert-manager.io/).
+
+```yaml
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: nginx
+  namespace: my-gateway-namespace
+spec:
+  gatewayClassName: nginx
+  listeners:
+    - allowedRoutes:
+        kinds:
+          - group: gateway.networking.k8s.io
+            kind: HTTPRoute
+        namespaces:
+          from: All
+      hostname: reposilite.example.local
+      name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - group: ''
+            kind: Secret
+            name: gateway-frontend-tls
+            namespace: my-gateway-namespace
+        mode: Terminate
+  tls:
+    backend:
+      clientCertificateRef:
+        group: ''
+        kind: Secret
+        name: gateway-backend-tls
+        namespace: my-gateway-namespace
 ```
 
 #### TLS certificate rotation
@@ -172,12 +275,20 @@ networkPolicies:
 
   ingress:
   - from:
+    # Ingress NGINX
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: ingress-nginx
       podSelector:
         matchLabels:
           app.kubernetes.io/name: ingress-nginx
+    # NGINX GatewayAPI Fabric
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: gateway-nginx
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: gateway-nginx
     ports:
     - port: http
       protocol: TCP
