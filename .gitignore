@@ -1,6 +1,8 @@
 charts
 node_modules
 target
-values[0-9].yml
-values[0-9].yaml
+!values.yaml
+!values.yml
+values*.yaml
+values*.yml
 *.tgz
