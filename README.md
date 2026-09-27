@@ -270,47 +270,49 @@ spec:
 
 ### Deployment
 
-| Name                                               | Description                                                                                                | Value                                       |
-| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `deployment.annotations`                           | Additional deployment annotations.                                                                         | `{}`                                        |
-| `deployment.labels`                                | Additional deployment labels.                                                                              | `{}`                                        |
-| `deployment.additionalContainers`                  | List of additional containers.                                                                             | `[]`                                        |
-| `deployment.affinity`                              | Affinity for the Reposilite deployment.                                                                    | `{}`                                        |
-| `deployment.initContainers`                        | List of additional init containers.                                                                        | `[]`                                        |
-| `deployment.dnsConfig`                             | dnsConfig of the Reposilite deployment.                                                                    | `{}`                                        |
-| `deployment.dnsPolicy`                             | dnsPolicy of the Reposilite deployment.                                                                    | `""`                                        |
-| `deployment.hostname`                              | Individual hostname of the pod.                                                                            | `""`                                        |
-| `deployment.subdomain`                             | Individual domain of the pod.                                                                              | `""`                                        |
-| `deployment.hostNetwork`                           | Use the kernel network namespace of the host system.                                                       | `false`                                     |
-| `deployment.imagePullSecrets`                      | Secret to use for pulling the image.                                                                       | `[]`                                        |
-| `deployment.reposilite.args`                       | Arguments passed to the Reposilite container.                                                              | `[]`                                        |
-| `deployment.reposilite.command`                    | Command passed to the Reposilite container.                                                                | `[]`                                        |
-| `deployment.reposilite.env`                        | List of environment variables for the Reposilite container.                                                |                                             |
-| `deployment.reposilite.envFrom`                    | List of environment variables mounted from configMaps or secrets for the Reposilite container.             | `[]`                                        |
-| `deployment.reposilite.image.registry`             | Image registry, eg. `docker.io`.                                                                           | `docker.io`                                 |
-| `deployment.reposilite.image.repository`           | Image repository, eg. `library/busybox`.                                                                   | `dzikoysk/reposilite`                       |
-| `deployment.reposilite.image.tag`                  | Custom image tag, eg. `0.1.0`. Defaults to `appVersion`.                                                   | `""`                                        |
-| `deployment.reposilite.image.pullPolicy`           | Image pull policy.                                                                                         | `IfNotPresent`                              |
-| `deployment.reposilite.resources`                  | CPU and memory resources of the pod.                                                                       | `{}`                                        |
-| `deployment.reposilite.securityContext`            | Security context of the container of the deployment.                                                       | `{}`                                        |
-| `deployment.reposilite.volumeMounts`               | Additional volume mounts.                                                                                  | `[]`                                        |
-| `deployment.nodeSelector`                          | NodeSelector of the Reposilite deployment.                                                                 | `{}`                                        |
-| `deployment.pluginContainer.args`                  | Arguments passed to the plugin container.                                                                  | `["--location","--fail","--max-time","60"]` |
-| `deployment.pluginContainer.image.registry`        | Image registry, eg. `docker.io`.                                                                           | `docker.io`                                 |
-| `deployment.pluginContainer.image.repository`      | Image repository, eg. `curlimages/curl`.                                                                   | `curlimages/curl`                           |
-| `deployment.pluginContainer.image.tag`             | Custom image tag, eg. `0.1.0`.                                                                             | `8.22.0`                                    |
-| `deployment.pluginContainer.image.pullPolicy`      | Image pull policy.                                                                                         | `IfNotPresent`                              |
-| `deployment.priorityClassName`                     | PriorityClassName of the Reposilite deployment.                                                            | `""`                                        |
-| `deployment.replicas`                              | Number of replicas for the Reposilite deployment.                                                          | `1`                                         |
-| `deployment.restartPolicy`                         | Restart policy of the Reposilite deployment.                                                               | `""`                                        |
-| `deployment.securityContext`                       | Security context of the Reposilite deployment.                                                             | `{}`                                        |
-| `deployment.strategy.type`                         | Strategy type - `Recreate` or `RollingUpdate`.                                                             | `RollingUpdate`                             |
-| `deployment.strategy.rollingUpdate.maxSurge`       | The maximum number of pods that can be scheduled above the desired number of pods during a rolling update. | `1`                                         |
-| `deployment.strategy.rollingUpdate.maxUnavailable` | The maximum number of pods that can be unavailable during a rolling update.                                | `1`                                         |
-| `deployment.terminationGracePeriodSeconds`         | How long to wait until forcefully kill the pod.                                                            | `60`                                        |
-| `deployment.tolerations`                           | Tolerations of the Reposilite deployment.                                                                  | `[]`                                        |
-| `deployment.topologySpreadConstraints`             | TopologySpreadConstraints of the Reposilite deployment.                                                    | `[]`                                        |
-| `deployment.volumes`                               | Additional volumes to mount into the pods of the reposilite deployment.                                    | `[]`                                        |
+| Name                                                    | Description                                                                                                | Value                                       |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `deployment.annotations`                                | Additional deployment annotations.                                                                         | `{}`                                        |
+| `deployment.labels`                                     | Additional deployment labels.                                                                              | `{}`                                        |
+| `deployment.additionalContainers`                       | List of additional containers.                                                                             | `[]`                                        |
+| `deployment.affinity`                                   | Affinity for the Reposilite deployment.                                                                    | `{}`                                        |
+| `deployment.initContainers`                             | List of additional init containers.                                                                        | `[]`                                        |
+| `deployment.dnsConfig`                                  | dnsConfig of the Reposilite deployment.                                                                    | `{}`                                        |
+| `deployment.dnsPolicy`                                  | dnsPolicy of the Reposilite deployment.                                                                    | `""`                                        |
+| `deployment.hostname`                                   | Individual hostname of the pod.                                                                            | `""`                                        |
+| `deployment.subdomain`                                  | Individual domain of the pod.                                                                              | `""`                                        |
+| `deployment.hostNetwork`                                | Use the kernel network namespace of the host system.                                                       | `false`                                     |
+| `deployment.imagePullSecrets`                           | Secret to use for pulling the image.                                                                       | `[]`                                        |
+| `deployment.reposilite.args`                            | Arguments passed to the Reposilite container.                                                              | `[]`                                        |
+| `deployment.reposilite.command`                         | Command passed to the Reposilite container.                                                                | `[]`                                        |
+| `deployment.reposilite.env`                             | List of environment variables for the Reposilite container.                                                |                                             |
+| `deployment.reposilite.envFrom`                         | List of environment variables mounted from configMaps or secrets for the Reposilite container.             | `[]`                                        |
+| `deployment.reposilite.image.registry`                  | Image registry, eg. `docker.io`.                                                                           | `docker.io`                                 |
+| `deployment.reposilite.image.repository`                | Image repository, eg. `library/busybox`.                                                                   | `dzikoysk/reposilite`                       |
+| `deployment.reposilite.image.tag`                       | Custom image tag, eg. `0.1.0`. Defaults to `appVersion`.                                                   | `""`                                        |
+| `deployment.reposilite.image.pullPolicy`                | Image pull policy.                                                                                         | `IfNotPresent`                              |
+| `deployment.reposilite.resources`                       | CPU and memory resources of the pod.                                                                       | `{}`                                        |
+| `deployment.reposilite.securityContext`                 | Security context of the container of the deployment.                                                       | `{}`                                        |
+| `deployment.reposilite.volumeMounts`                    | Additional volume mounts.                                                                                  | `[]`                                        |
+| `deployment.nodeSelector`                               | NodeSelector of the Reposilite deployment.                                                                 | `{}`                                        |
+| `deployment.pluginContainer.args`                       | Arguments passed to the plugin container.                                                                  | `["--location","--fail","--max-time","60"]` |
+| `deployment.pluginContainer.image.registry`             | Image registry, eg. `docker.io`.                                                                           | `docker.io`                                 |
+| `deployment.pluginContainer.image.repository`           | Image repository, eg. `curlimages/curl`.                                                                   | `curlimages/curl`                           |
+| `deployment.pluginContainer.image.tag`                  | Custom image tag, eg. `0.1.0`.                                                                             | `8.22.0`                                    |
+| `deployment.pluginContainer.image.pullPolicy`           | Image pull policy.                                                                                         | `IfNotPresent`                              |
+| `deployment.pluginContainer.securityContext.runAsGroup` | Group id of the plugin container.                                                                          | `977`                                       |
+| `deployment.pluginContainer.securityContext.runAsUser`  | User id of the plugin container.                                                                           | `977`                                       |
+| `deployment.priorityClassName`                          | PriorityClassName of the Reposilite deployment.                                                            | `""`                                        |
+| `deployment.replicas`                                   | Number of replicas for the Reposilite deployment.                                                          | `1`                                         |
+| `deployment.restartPolicy`                              | Restart policy of the Reposilite deployment.                                                               | `""`                                        |
+| `deployment.securityContext`                            | Security context of the Reposilite deployment.                                                             | `{}`                                        |
+| `deployment.strategy.type`                              | Strategy type - `Recreate` or `RollingUpdate`.                                                             | `RollingUpdate`                             |
+| `deployment.strategy.rollingUpdate.maxSurge`            | The maximum number of pods that can be scheduled above the desired number of pods during a rolling update. | `1`                                         |
+| `deployment.strategy.rollingUpdate.maxUnavailable`      | The maximum number of pods that can be unavailable during a rolling update.                                | `1`                                         |
+| `deployment.terminationGracePeriodSeconds`              | How long to wait until forcefully kill the pod.                                                            | `60`                                        |
+| `deployment.tolerations`                                | Tolerations of the Reposilite deployment.                                                                  | `[]`                                        |
+| `deployment.topologySpreadConstraints`                  | TopologySpreadConstraints of the Reposilite deployment.                                                    | `[]`                                        |
+| `deployment.volumes`                                    | Additional volumes to mount into the pods of the reposilite deployment.                                    | `[]`                                        |
 
 ### Horizontal Pod Autoscaler (HPA)
 

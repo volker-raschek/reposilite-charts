@@ -178,6 +178,15 @@ deployment:
       tag: "8.22.0"
       pullPolicy: IfNotPresent
 
+    ## @param deployment.pluginContainer.securityContext.runAsGroup Group id of the plugin container.
+    ## @param deployment.pluginContainer.securityContext.runAsUser User id of the plugin container.
+    # Reposilite chowns /app to 977:977 when its entrypoint starts as root. Downloading the plugin as a
+    # different user leaves behind a file the plugin container can no longer overwrite, which breaks every
+    # restart that reuses the emptyDir. Align this with PUID/PGID when those are overridden.
+    securityContext:
+      runAsGroup: 977
+      runAsUser: 977
+
   ## @param deployment.priorityClassName PriorityClassName of the Reposilite deployment.
   priorityClassName: ""
 

@@ -71,7 +71,11 @@
 {{- if eq (include "reposilite.plugins.prometheus.enabled" $) "true" }}
 {{- $fileName := splitList "/" (tpl .Values.config.plugins.prometheus.url $) | last }}
 {{- $individualArgs := concat $pluginContainerArgs (list "--output" $fileName (tpl .Values.config.plugins.prometheus.url $)) }}
-{{- $initContainers = concat $initContainers (list (dict "args" $individualArgs "name" "download-prometheus-plugin" "image" $pluginContainerImage "volumeMounts" $pluginContainerVolumeMounts)) }}
+{{- $pluginContainer := dict "args" $individualArgs "name" "download-prometheus-plugin" "image" $pluginContainerImage "volumeMounts" $pluginContainerVolumeMounts }}
+{{- with .Values.deployment.pluginContainer.securityContext }}
+{{- $_ := set $pluginContainer "securityContext" . }}
+{{- end }}
+{{- $initContainers = concat $initContainers (list $pluginContainer) }}
 {{- end }}
 
 {{ toYaml (dict "initContainers" $initContainers) }}

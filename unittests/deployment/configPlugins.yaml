@@ -30,6 +30,9 @@ tests:
         - https://reposilite.com/plugins/prometheus.jar
         name: download-prometheus-plugin
         image: docker.io/curlimages/curl:0.1.0
+        securityContext:
+          runAsGroup: 977
+          runAsUser: 977
         volumeMounts:
         - mountPath: /app/data/plugins
           name: plugins
